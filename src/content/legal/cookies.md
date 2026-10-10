@@ -20,7 +20,7 @@ La vidéo de présentation est hébergée sur le site lui-même : elle ne dépos
 
 ## Sur l’application app.scoly.ink
 
-L’application peut utiliser des cookies ou un stockage local **strictement nécessaires** : maintenir votre session ouverte, sécuriser la connexion et mémoriser des réglages de fonctionnement. Sans eux, la connexion ne peut pas fonctionner. **[À compléter : liste précise après vérification, par exemple nom, finalité et durée]**
+L’application peut utiliser des cookies ou un stockage local **strictement nécessaires** : maintenir votre session ouverte, sécuriser la connexion et mémoriser des réglages de fonctionnement. 
 
 ## Liens vers d’autres services
 
