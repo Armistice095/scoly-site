@@ -10,8 +10,7 @@ Les présentes conditions encadrent l’utilisation de Scoly, accessible sur sco
 
 ## 1. Éditeur du service
 
-Scoly est édité par **[À compléter : raison sociale ou nom, forme juridique]**, dont le siège est situé à **[À compléter : adresse, Bénin]**, immatriculé sous le numéro **[À compléter : RCCM / IFU]**.
-
+Scoly est édité par Lara Services
 Contact : contact@scoly.ink
 
 ## 2. Définitions
@@ -42,8 +41,6 @@ Certains Documents indiqués « Bientôt disponible » dans l’application ne s
 
 Scoly propose une formule gratuite (Découverte) et des formules payantes. Leur contenu et leurs prix, en francs CFA (FCFA) et facturés à l’année, sont indiqués sur la page Tarifs du site. La formule Découverte est limitée à un nombre de documents par mois précisé sur cette page. Les autres formules s’appuient sur un usage raisonnable.
 
-Modalités de paiement : **[À compléter : moyens de paiement acceptés, échéance, facturation]**.
-Renouvellement, remboursement et changement de formule : **[À compléter]**.
 
 ## 6. Obligations de l’Établissement
 
@@ -76,7 +73,7 @@ Scoly, son logo, son interface, ses modèles de documents et son code sont prot�
 
 Nous faisons le nécessaire pour que le Service soit disponible et sécurisé, mais nous ne pouvons pas garantir qu’il fonctionne sans interruption ni erreur (maintenance, panne de réseau ou d’électricité, cas de force majeure). Nous sommes tenus à une obligation de moyens.
 
-Dans les limites permises par la loi, Scoly n’est pas responsable des dommages indirects, ni des conséquences d’informations erronées saisies par l’Établissement ou d’un usage non conforme du Service. Notre responsabilité totale ne dépasse pas les sommes que vous avez payées au cours des **[À compléter : 12]** derniers mois. Ces limites ne s’appliquent pas en cas de faute lourde ou intentionnelle.
+Dans les limites permises par la loi, Scoly n’est pas responsable des dommages indirects, ni des conséquences d’informations erronées saisies par l’Établissement ou d’un usage non conforme du Service. Notre responsabilité totale ne dépasse pas les sommes que vous avez payées au cours des 12 derniers mois. Ces limites ne s’appliquent pas en cas de faute lourde ou intentionnelle.
 
 ## 11. Suspension et résiliation
 

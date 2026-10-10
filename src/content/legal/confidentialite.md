@@ -10,7 +10,8 @@ Cette politique explique quelles données personnelles Scoly traite, pourquoi, p
 
 ## 1. Qui est responsable ?
 
-Scoly est édité par **[À compléter : raison sociale, forme juridique, adresse au Bénin, RCCM / IFU]**. Contact pour toute question sur vos données : contact@scoly.ink
+Scoly est édité par Lara Services
+Contact : contact@scoly.ink
 
 Nous intervenons sous deux rôles :
 
@@ -45,17 +46,16 @@ Nous n’utilisons pas les données des élèves pour de la publicité et nous n
 
 - Les utilisateurs autorisés par l’Établissement.
 - L’équipe Scoly, uniquement pour le support et la maintenance, dans la limite de ce qui est nécessaire.
-- Nos prestataires techniques (hébergement, envoi d’e-mails) : **[À compléter : liste, par exemple Cloudflare pour le site ; hébergeur de l’application ; service d’e-mail]**, liés par des engagements de confidentialité et de sécurité.
+- Nos prestataires techniques (hébergement, envoi d’e-mails) : Cloudflare, Brevo, liés par des engagements de confidentialité et de sécurité.
 - Les autorités, lorsque la loi l’exige.
 
-Certains prestataires peuvent stocker des données hors du Bénin. Dans ce cas, nous veillons à ce que le transfert respecte les conditions du Code du numérique. Pays d’hébergement des données de l’application : **[À compléter]**.
+Certains prestataires peuvent stocker des données hors du Bénin. Dans ce cas, nous veillons à ce que le transfert respecte les conditions du Code du numérique. 
 
 ## 5. Combien de temps ?
 
-- Données du compte et de l’espace : pendant la durée du contrat, puis **[À compléter : par exemple 12 mois]** après sa fin, sauf demande de suppression antérieure.
+- Données du compte et de l’espace : pendant la durée du contrat, puis 12 mois après sa fin, sauf demande de suppression antérieure.
 - Documents et archives : tant que l’Établissement les conserve. Il peut décider de leur suppression ou en demander la restitution à la fin du contrat.
 - Données de facturation : durée légale de conservation comptable.
-- Journaux techniques : **[À compléter : par exemple 12 mois maximum]**.
 
 ## 6. Sécurité
 
@@ -73,8 +73,6 @@ Si vous estimez que vos droits ne sont pas respectés, vous pouvez saisir l’**
 ## 8. Obligations de l’Établissement
 
 L’Établissement, responsable du traitement des données des élèves, doit notamment informer les familles, ne saisir que les données utiles, et accomplir les formalités éventuellement exigées auprès de l’APDP. Scoly peut lui fournir les informations nécessaires pour cela.
-
-Formalités de Scoly auprès de l’APDP : **[À compléter : déclaration ou autorisation, numéro]**.
 
 ## 9. Modifications
 
