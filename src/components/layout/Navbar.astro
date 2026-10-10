@@ -1,0 +1,246 @@
+---
+import Logo from "../ui/Logo.astro";
+import Button from "../ui/Button.astro";
+import Icon from "../ui/Icon.astro";
+import { navigation, sectionIds, site } from "../../config/site";
+
+/**
+ * Barre de navigation flottante en pilule (BRIEF §6).
+ * - Sticky, hauteur du conteneur constante : changer d'état ne déplace rien.
+ * - `data-scrolled` (posé par navbar.ts après ~40 px) : fond translucide, bordure, ombre, resserrement.
+ * - Lien actif : `aria-current="location"` posé par navbar.ts (scrollspy).
+ * - Bureau ≥ 1100 px : tous les éléments dans la barre. En dessous : logo, thème, (essai ≥ 640 px), burger + panneau.
+ * - Sans JavaScript : la version bureau fonctionne en HTML pur.
+ */
+// Hors page d'accueil (404, pages légales), les ancres de section pointent vers l'accueil : « /#documents »
+const prefix = Astro.url.pathname === "/" ? "" : "/";
+const anchor = (href: string) => (href.startsWith("#") ? `${prefix}${href}` : href);
+const sectionLinks = navigation.filter((item) => !item.external);
+const externalLinks = navigation.filter((item) => item.external);
+
+const linkBase =
+  "inline-flex min-h-11 items-center gap-1.5 rounded-full px-4 text-[0.9375rem] font-medium whitespace-nowrap text-muted transition-colors duration-150 hover:bg-tile hover:text-ink";
+const linkActive =
+  "aria-[current=location]:bg-primary aria-[current=location]:text-on-primary aria-[current=location]:hover:bg-primary-hover aria-[current=location]:hover:text-on-primary";
+const iconButton =
+  "inline-flex size-11 shrink-0 items-center justify-center rounded-full text-ink transition-colors duration-150 hover:bg-tile";
+---
+
+<header class="pointer-events-none sticky top-0 z-50 pt-2 sm:pt-3">
+  <div class="nav-wrap mx-auto w-full max-w-6xl">
+    <div class="flex h-16 items-center">
+      <nav
+        aria-label="Navigation principale"
+        data-navbar
+        class="nav-bar pointer-events-auto relative flex w-full items-center gap-2 min-[1100px]:gap-6"
+      >
+        <!-- Gauche : logo -->
+        <a
+          href={anchor(`#${sectionIds.hero}`)}
+          aria-label="Scoly, retour en haut de la page"
+          class="inline-flex min-h-11 shrink-0 items-center rounded-full"
+        >
+          <Logo class="h-9 min-[640px]:max-[1099px]:h-10" />
+        </a>
+
+        <!-- Centre : liens (bureau) -->
+        <ul class="hidden min-w-0 flex-1 items-center justify-center gap-1 min-[1100px]:flex">
+          {
+            sectionLinks.map((item) => (
+              <li>
+                <a
+                  href={anchor(item.href)}
+                  data-nav-section={item.href.slice(1)}
+                  class:list={[linkBase, linkActive]}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+          {
+            externalLinks.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class:list={[linkBase]}
+                >
+                  {item.label}
+                  <Icon name="external" class="size-3.5" />
+                  <span class="sr-only">(s’ouvre dans un nouvel onglet)</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+
+        <!-- Droite : connexion, essai, thème, menu -->
+        <div class="ml-auto flex shrink-0 items-center gap-1.5 min-[1100px]:ml-0 min-[1100px]:gap-2">
+          <div class="hidden min-[1100px]:block">
+            <Button variant="ghost" href={site.links.login} class="px-3! font-medium! text-ink">Se connecter</Button>
+          </div>
+          <div class="hidden sm:block">
+            <Button href={site.links.signup} class="min-[1100px]:px-4!">Essayer gratuitement</Button>
+          </div>
+
+          <button
+            type="button"
+            data-theme-toggle
+            data-label-to-dark="Passer au thème sombre"
+            data-label-to-light="Passer au thème clair"
+            aria-label="Passer au thème sombre"
+            class={iconButton}
+          >
+            <Icon name="moon" class="size-5 dark:hidden" />
+            <Icon name="sun" class="hidden size-5 dark:block" />
+          </button>
+
+          <button
+            type="button"
+            data-menu-button
+            aria-expanded="false"
+            aria-controls="menu-mobile"
+            aria-label="Ouvrir le menu"
+            class:list={["group", iconButton]}
+          >
+            <Icon name="menu" class="size-5 group-aria-expanded:hidden" />
+            <Icon name="close" class="hidden size-5 group-aria-expanded:block" />
+          </button>
+        </div>
+
+        <!-- Panneau mobile / tablette -->
+        <div
+          id="menu-mobile"
+          data-menu-panel
+          hidden
+          class="nav-panel absolute inset-x-0 top-full mt-2 rounded-card border border-line bg-surface p-3 shadow-soft min-[1100px]:hidden"
+        >
+          <ul class="flex flex-col gap-1">
+            {
+              sectionLinks.map((item) => (
+                <li>
+                  <a
+                    href={anchor(item.href)}
+                    data-nav-section={item.href.slice(1)}
+                    class:list={[
+                      "flex min-h-12 items-center rounded-control px-4 text-base font-medium text-ink transition-colors duration-150 hover:bg-tile",
+                      "aria-[current=location]:bg-primary aria-[current=location]:text-on-primary aria-[current=location]:hover:bg-primary-hover",
+                    ]}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+            {
+              externalLinks.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="flex min-h-12 items-center justify-between rounded-control px-4 text-base font-medium text-ink transition-colors duration-150 hover:bg-tile"
+                  >
+                    <span>{item.label}</span>
+                    <Icon name="external" class="size-4 text-muted" />
+                    <span class="sr-only">(s’ouvre dans un nouvel onglet)</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+          <div class="mt-3 flex flex-col gap-2 border-t border-line pt-3">
+            <Button variant="secondary" href={site.links.login} block>Se connecter</Button>
+            <Button href={site.links.signup} block>Essayer gratuitement</Button>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<style>
+  /* Barre au repos : discrète (presque rien). Réserve la bordure pour éviter tout saut. */
+  .nav-bar {
+    height: 4rem;
+    padding-inline: 0;
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    background-color: transparent;
+    box-shadow: 0 0 0 transparent;
+    transition:
+      height 0.2s ease,
+      padding 0.2s ease,
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      backdrop-filter 0.2s ease;
+  }
+  /* Pilule : après ~40 px de scroll, ou menu ouvert */
+  .nav-bar[data-scrolled],
+  .nav-bar[data-menu-open] {
+    height: 3.5rem;
+    padding-inline: 0.5rem 0.5rem;
+    border-color: var(--color-line);
+    background-color: var(--color-surface);
+    background-color: color-mix(in srgb, var(--color-surface) 82%, transparent);
+    box-shadow: var(--shadow-soft);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    backdrop-filter: blur(14px) saturate(1.4);
+  }
+
+  /* Mêmes marges latérales que Container (20 px, puis 32 px dès 640 px, largeur max. 72 rem),
+     sauf de 1100 à 1215 px où l'on gagne 24 px pour que tous les éléments tiennent dans la barre. */
+  .nav-wrap {
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .nav-wrap {
+      padding-inline: 2rem;
+    }
+  }
+  @media (min-width: 1100px) and (max-width: 1215px) {
+    .nav-wrap {
+      padding-inline: 1.25rem;
+    }
+  }
+
+  /* Menu burger : visible seulement avec JavaScript, et sous 1100 px */
+  [data-menu-button] {
+    display: none;
+  }
+  :global(.js) [data-menu-button] {
+    display: inline-flex;
+  }
+  @media (min-width: 1100px) {
+    :global(.js) [data-menu-button] {
+      display: none;
+    }
+  }
+
+  /* Ouverture du panneau */
+  .nav-panel:not([hidden]) {
+    animation: nav-panel-in 0.16s ease-out;
+  }
+  @keyframes nav-panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-bar {
+      transition: none;
+    }
+    .nav-panel:not([hidden]) {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import "../../scripts/navbar";
+</script>

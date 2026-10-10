@@ -1,0 +1,80 @@
+---
+import Icon from "./Icon.astro";
+import type { IconName } from "./icons";
+
+/**
+ * Bouton ou lien-bouton. Avec `href` : <a> ; sinon : <button>.
+ * Zone cliquable d'au moins 44 px de haut dans les deux tailles.
+ */
+interface Props {
+  variant?: "primary" | "secondary" | "ghost";
+  size?: "md" | "lg";
+  href?: string;
+  /** Lien externe : target="_blank", rel sécurisé, icône et mention pour les lecteurs d'écran */
+  external?: boolean;
+  /** Icône après le libellé (ignorée si external) */
+  icon?: IconName;
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
+  /** Occupe toute la largeur */
+  block?: boolean;
+  class?: string;
+  [attr: string]: unknown;
+}
+const {
+  variant = "primary",
+  size = "md",
+  href,
+  external = false,
+  icon,
+  type = "button",
+  disabled = false,
+  block = false,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const base =
+  "inline-flex select-none items-center justify-center gap-2 rounded-control font-semibold whitespace-nowrap transition-colors duration-150 active:translate-y-px";
+const sizes = {
+  md: "min-h-11 px-5 text-[0.9375rem]",
+  lg: "min-h-14 px-7 text-base",
+};
+const variants = {
+  primary: "bg-primary text-on-primary hover:bg-primary-hover",
+  secondary: "border border-line bg-surface text-ink hover:bg-tile",
+  ghost: "text-ink hover:bg-tile",
+};
+const disabledCls = "pointer-events-none opacity-50";
+const classes = [
+  base,
+  sizes[size],
+  variants[variant],
+  block && "w-full",
+  disabled && disabledCls,
+  className,
+];
+const iconName: IconName | undefined = external ? "external" : icon;
+---
+
+{
+  href ? (
+    <a
+      href={disabled ? undefined : href}
+      class:list={classes}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
+      aria-disabled={disabled ? "true" : undefined}
+      {...rest}
+    >
+      <slot />
+      {iconName && <Icon name={iconName} class="size-4" />}
+      {external && <span class="sr-only">(s’ouvre dans un nouvel onglet)</span>}
+    </a>
+  ) : (
+    <button type={type} disabled={disabled} class:list={classes} {...rest}>
+      <slot />
+      {iconName && <Icon name={iconName} class="size-4" />}
+    </button>
+  )
+}

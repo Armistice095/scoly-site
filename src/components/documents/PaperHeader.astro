@@ -1,0 +1,22 @@
+---
+/** En-tête d'établissement des aperçus : logo carré fictif, ministère, nom, contact, mention de la République. */
+import { sample } from "./sample";
+---
+
+<div class="pp-head">
+  <div class="pp-head-left">
+    <svg class="pp-logo" viewBox="0 0 40 40" focusable="false">
+      <rect width="40" height="40" rx="9" fill="var(--color-primary)"></rect>
+      <path d="M8 13c4.2-1.6 8.2-1.1 12 1.6v13.6c-3.8-2.7-7.8-3.2-12-1.6z" fill="var(--color-on-primary)"></path>
+      <path d="M32 13c-4.2-1.6-8.2-1.1-12 1.6v13.6c3.8-2.7 7.8-3.2 12-1.6z" fill="var(--color-on-primary)" opacity="0.78"></path>
+    </svg>
+    <div>
+      <p class="pp-school">{sample.school}</p>
+      <p class="pp-contact">{sample.city}, Bénin · {sample.phone}</p>
+    </div>
+  </div>
+  <div class="pp-head-right">
+    <p class="pp-rep">République du Bénin</p>
+    <p class="pp-motto">Fraternité - Justice - Travail</p>
+  </div>
+</div>

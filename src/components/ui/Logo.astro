@@ -1,0 +1,35 @@
+---
+/**
+ * Logo Scoly : version claire (texte marine) en thème clair, version sombre (texte clair) en thème sombre.
+ * Dimensions déclarées (ratio 733 × 287, WebP allégés générés par `npm run make-icons`). La variante sombre est chargée à la demande. La hauteur se règle avec `class` (h-9 par défaut).
+ */
+interface Props {
+  class?: string;
+}
+const { class: className = "h-9" } = Astro.props;
+---
+
+<span class="inline-flex">
+  <img
+    src="/logo-scoly-240.webp"
+    srcset="/logo-scoly-240.webp 240w, /logo-scoly-480.webp 480w"
+    sizes="120px"
+    alt="Scoly"
+    width="240"
+    height="94"
+    decoding="async"
+    class:list={["w-auto dark:hidden", className]}
+  />
+  <img
+    src="/logo-scoly-dark-240.webp"
+    srcset="/logo-scoly-dark-240.webp 240w, /logo-scoly-dark-480.webp 480w"
+    sizes="120px"
+    alt=""
+    aria-hidden="true"
+    width="240"
+    height="94"
+    loading="lazy"
+    decoding="async"
+    class:list={["hidden w-auto dark:block", className]}
+  />
+</span>

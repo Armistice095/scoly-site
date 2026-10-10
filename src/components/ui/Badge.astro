@@ -1,0 +1,23 @@
+---
+/** Pastille d'état ou d'étiquette. « brand » reprend le badge bleu très clair de l'application. */
+interface Props {
+  tone?: "brand" | "neutral" | "outline";
+  class?: string;
+}
+const { tone = "brand", class: className } = Astro.props;
+const tones = {
+  brand: "bg-badge text-badge-ink",
+  neutral: "bg-tile text-ink",
+  outline: "border border-line text-muted",
+};
+---
+
+<span
+  class:list={[
+    "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[0.8125rem] leading-5 font-medium",
+    tones[tone],
+    className,
+  ]}
+>
+  <slot />
+</span>

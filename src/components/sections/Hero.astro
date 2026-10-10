@@ -1,0 +1,100 @@
+---
+import Section from "../ui/Section.astro";
+import Container from "../ui/Container.astro";
+import Button from "../ui/Button.astro";
+import VideoFrame from "../ui/VideoFrame.astro";
+import { sectionIds, site } from "../../config/site";
+// Italique de Newsreader : chargé ici (et non dans global.css) car seul le Hero l'utilise.
+import "@fontsource-variable/newsreader/wght-italic.css";
+---
+
+<Section
+  id={sectionIds.hero}
+  labelledby="hero-titre"
+  container={false}
+  class="relative overflow-hidden pt-10! sm:pt-14! lg:pt-16!"
+>
+  <div data-hero class="relative">
+    <!-- Décor : grands rubans très atténués, inspirés du ruban du logo. SVG inline, sans flou ni dégradé. -->
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 -z-0 [mask-image:linear-gradient(to_bottom,black_60%,transparent)]"
+    >
+      <svg
+        class="size-full"
+        viewBox="0 0 1600 900"
+        preserveAspectRatio="xMidYMin slice"
+        focusable="false"
+      >
+        <g class="text-brand-500 dark:text-brand-400" fill="currentColor">
+          <path
+            fill-opacity="0.075"
+            d="M-160 250C200 30 560 30 800 150C1040 270 1360 250 1760 50L1760 220C1360 420 1040 440 780 320C540 210 220 220-160 420Z"
+          ></path>
+        </g>
+        <g class="text-brand-700 dark:text-brand-300" fill="currentColor">
+          <path
+            fill-opacity="0.055"
+            d="M-160 600C260 500 620 540 900 620C1180 700 1440 680 1760 540L1760 690C1440 840 1180 860 880 780C600 710 260 680-160 770Z"
+          ></path>
+        </g>
+      </svg>
+    </div>
+
+    <Container class="relative flex flex-col items-center text-center">
+      <h1 id="hero-titre" data-hero-item style="--hero-i: 0" class="type-h1 max-w-[9.2em]">
+        Les documents de votre école, prêts <em
+          class="font-medium whitespace-nowrap text-accent italic">en quelques clics</em
+        >.
+      </h1>
+      <p data-hero-item style="--hero-i: 1" class="type-lead mt-6 max-w-2xl">
+        Scoly centralise les informations de vos élèves, produit certificats, attestations et fiches, puis les range dans des archives faciles à&nbsp;consulter.
+      </p>
+
+      <div data-hero-item style="--hero-i: 2" class="mt-9 flex w-full flex-col items-center">
+        <div class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+          <Button href={site.links.signup} size="lg" class="w-full sm:w-auto">Essayer gratuitement</Button>
+          <Button
+            href={`#${sectionIds.howItWorks}`}
+            variant="secondary"
+            size="lg"
+            class="w-full sm:w-auto"
+          >
+            Voir comment ça marche
+          </Button>
+        </div>
+        <p class="type-small mt-4">Plan gratuit&nbsp;: jusqu’à 10 documents par mois, sans engagement.</p>
+      </div>
+
+      <div data-hero-item data-hero-frame style="--hero-i: 3" class="mt-14 w-full max-w-[1100px] sm:mt-16">
+        <VideoFrame />
+      </div>
+    </Container>
+  </div>
+</Section>
+
+<style>
+  /*
+   * Animation d'entrée en CSS pur : aucun script, aucun état initial masqué posé par JavaScript.
+   * Cascade titre → sous-titre → boutons → cadre vidéo : 0,5 s par élément, décalage de 0,1 s,
+   * soit ~0,8 s au total. Le titre démarre sans délai.
+   * `backwards` (et non `both`) : l'état final est l'état naturel de l'élément, sans style retenu.
+   * Aucune animation avec prefers-reduced-motion.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    [data-hero-item] {
+      animation: hero-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) backwards;
+      animation-delay: calc(var(--hero-i, 0) * 0.1s);
+    }
+    /* Le cadre vidéo gagne en plus une très légère mise à l'échelle */
+    [data-hero-frame] {
+      --hero-from-scale: 0.985;
+    }
+  }
+  @keyframes hero-in {
+    from {
+      opacity: 0;
+      transform: translateY(18px) scale(var(--hero-from-scale, 1));
+    }
+  }
+</style>

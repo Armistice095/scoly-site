@@ -1,0 +1,14 @@
+{
+  "name": "Scoly",
+  "short_name": "Scoly",
+  "description": "Documents scolaires générés en quelques clics, pour les écoles du Bénin.",
+  "lang": "fr",
+  "start_url": "/",
+  "display": "browser",
+  "theme_color": "#f7f8fa",
+  "background_color": "#f7f8fa",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

@@ -1,0 +1,35 @@
+---
+/** Aperçu : demande de transfert. Données fictives. */
+import Paper from "./Paper.astro";
+import PaperHeader from "./PaperHeader.astro";
+import PaperSign from "./PaperSign.astro";
+import PaperFooter from "./PaperFooter.astro";
+import { sample } from "./sample";
+---
+
+<Paper label="Aperçu d’une demande de transfert, données fictives">
+  <PaperHeader />
+  <p class="pp-title">Demande de transfert</p>
+  <p class="pp-ref">{sample.city}, le {sample.date}</p>
+  <p class="pp-p">
+    À l’attention du Directeur de l’{sample.school}.
+  </p>
+  <p class="pp-p"><b>Objet&nbsp;: demande de transfert de l’élève {sample.student}</b></p>
+  <p class="pp-p">
+    Madame, Monsieur, je sollicite le transfert de l’élève <b>{sample.student}</b>, matricule <b>{sample.matricule}</b>,
+    actuellement en classe de <b>{sample.grade}</b>, vers un autre établissement, pour l’année scolaire <b>{sample.year}</b>.
+  </p>
+  <dl class="pp-kv">
+    <dt>Responsable</dt><dd>{sample.guardian}</dd>
+    <dt>Téléphone</dt><dd>{sample.phone}</dd>
+    <dt>Établissement souhaité</dt><dd>Établissement d’accueil</dd>
+  </dl>
+  <PaperSign>
+    <div style="width:34cqw;text-align:center;line-height:1.4">
+      <p>Le demandeur,</p>
+      <div style="height:11.7cqw"></div>
+      <p class="pp-signname">{sample.guardian}</p>
+    </div>
+  </PaperSign>
+  <PaperFooter />
+</Paper>

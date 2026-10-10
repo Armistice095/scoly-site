@@ -1,0 +1,94 @@
+---
+import { render } from "astro:content";
+import Base from "../layouts/Base.astro";
+import Navbar from "../components/layout/Navbar.astro";
+import Footer from "../components/layout/Footer.astro";
+import Container from "../components/ui/Container.astro";
+import { getPublishedLegal } from "../lib/legal";
+
+/**
+ * Pages légales : /confidentialite, /conditions, /cookies. Générées uniquement pour les fichiers de
+ * `src/content/legal/` dont `draft` vaut false. `noindex: true` dans le frontmatter ajoute la balise noindex.
+ */
+export async function getStaticPaths() {
+  const pages = await getPublishedLegal();
+  return pages.map((p) => ({ params: { slug: p.slug }, props: { entry: p.entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, description, updated, noindex } = entry.data;
+const updatedLabel = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long" }).format(updated);
+---
+
+<Base title={`${title} — Scoly`} description={description} noindex={noindex}>
+  <Navbar />
+  <main id="contenu" tabindex="-1" class="outline-none">
+    <Container size="narrow" class="py-14 sm:py-20">
+      <h1 class="type-h1">{title}</h1>
+      <p class="type-small mt-4">
+        Dernière mise à jour&nbsp;: <time datetime={updated.toISOString().slice(0, 10)}>{updatedLabel}</time>
+      </p>
+      <div class="legal-prose mt-10">
+        <Content />
+      </div>
+    </Container>
+  </main>
+  <Footer />
+</Base>
+
+<style is:global>
+  .legal-prose {
+    max-width: 40rem; /* ≈ 65 caractères par ligne */
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: var(--color-ink);
+  }
+  .legal-prose > * + * {
+    margin-top: 1.25rem;
+  }
+  .legal-prose h2 {
+    margin-top: 2.5rem;
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 1.625rem;
+    line-height: 1.25;
+    color: var(--color-ink);
+  }
+  .legal-prose h3 {
+    margin-top: 2rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .legal-prose ul,
+  .legal-prose ol {
+    padding-left: 1.5rem;
+  }
+  .legal-prose ul {
+    list-style: disc;
+  }
+  .legal-prose ol {
+    list-style: decimal;
+  }
+  .legal-prose li + li {
+    margin-top: 0.5rem;
+  }
+  .legal-prose a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .legal-prose strong {
+    font-weight: 600;
+  }
+  .legal-prose blockquote {
+    padding-left: 1rem;
+    border-left: 3px solid var(--color-line);
+    color: var(--color-muted);
+  }
+  .legal-prose hr {
+    border: 0;
+    border-top: 1px solid var(--color-line);
+  }
+</style>

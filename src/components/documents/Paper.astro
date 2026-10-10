@@ -1,0 +1,273 @@
+---
+/**
+ * Feuille A4 commune aux aperçus de documents (étape 5) : blanche, ombre douce, sans rotation.
+ *
+ * - Ratio 1 : 1,414, largeur fluide. Tout ce qui est dessiné dedans est dimensionné en `cqw`
+ *   (unité de la largeur de la feuille) : l'aperçu garde les mêmes proportions de 320 à 1440 px.
+ * - La feuille porte la classe `.light` : elle reste blanche en thème sombre (c'est du papier) et
+ *   ses jetons (ink, muted, line, primary…) restent ceux du thème clair. Seule la scène autour s'adapte.
+ * - `role="img"` + `aria-label` descriptif ; le contenu interne est `aria-hidden` et non sélectionnable.
+ * - Taille de texte minimale : 2,85 cqw, soit 9,2 px quand la feuille mesure 326 px (mobile 390 px).
+ *
+ * Les classes `pp-*` ci-dessous sont partagées par PaperHeader, PaperSign, PaperFooter et les cinq documents.
+ */
+interface Props {
+  /** Libellé lu par les lecteurs d'écran, ex. « Aperçu d’un certificat de scolarité, données fictives » */
+  label: string;
+  class?: string;
+}
+const { label, class: className } = Astro.props;
+---
+
+<div role="img" aria-label={label} class:list={["pp light", className]}>
+  <div aria-hidden="true" class="pp-page">
+    <slot />
+  </div>
+</div>
+
+<style is:global>
+  .pp {
+    container-type: inline-size;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1.414;
+    background: var(--color-surface);
+    color: var(--color-ink);
+    border-radius: 3px;
+    box-shadow:
+      0 1px 2px rgb(24 28 38 / 0.1),
+      0 22px 44px -22px rgb(24 28 38 / 0.45);
+    overflow: hidden;
+  }
+  .pp-page {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 6cqw 7.4cqw 4.6cqw;
+    font-family: var(--font-serif);
+    font-size: 3.05cqw;
+    font-weight: 450;
+    line-height: 1.45;
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: default;
+    overflow: hidden;
+  }
+  /* Double filet d'encadrement, comme sur les documents générés */
+  .pp-page::before,
+  .pp-page::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+  }
+  .pp-page::before {
+    inset: 2.2cqw;
+    border: 0.35cqw solid var(--color-primary);
+  }
+  .pp-page::after {
+    inset: 3.1cqw;
+    border: 0.15cqw solid var(--color-line);
+  }
+  .pp-page b {
+    font-weight: 650;
+  }
+
+  /* En-tête d'établissement */
+  .pp-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 3cqw;
+    padding-bottom: 2.2cqw;
+    border-bottom: 1.1cqw double var(--color-primary);
+    font-size: 2.85cqw;
+    line-height: 1.3;
+  }
+  .pp-head-left {
+    display: flex;
+    align-items: center;
+    gap: 2.6cqw;
+    min-width: 0;
+  }
+  .pp-logo {
+    flex: none;
+    width: 9.5cqw;
+    height: 9.5cqw;
+  }
+  .pp-school {
+    margin-top: 0.5cqw;
+    font-weight: 650;
+    font-size: 3.2cqw;
+    line-height: 1.2;
+    color: var(--color-primary);
+  }
+  .pp-contact,
+  .pp-motto {
+    margin-top: 0.4cqw;
+    color: var(--color-muted);
+  }
+  .pp-head-right {
+    flex: none;
+    text-align: right;
+  }
+  .pp-rep {
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .pp-motto {
+    font-style: italic;
+  }
+
+  /* Titre du document et référence */
+  .pp-title {
+    margin-top: 4.2cqw;
+    text-align: center;
+    font-weight: 650;
+    font-size: 4.4cqw;
+    line-height: 1.15;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+  }
+  .pp-title::after {
+    content: "";
+    display: block;
+    width: 12cqw;
+    height: 0.5cqw;
+    margin: 1.4cqw auto 0;
+    background: var(--color-primary);
+  }
+  .pp-ref {
+    margin-top: 1.4cqw;
+    text-align: center;
+    font-style: italic;
+    font-size: 2.95cqw;
+    color: var(--color-muted);
+  }
+
+  /* Corps de texte, étiquettes, tuiles et champs */
+  .pp-p {
+    margin-top: 3cqw;
+    text-align: left;
+  }
+  .pp-p + .pp-p {
+    margin-top: 2cqw;
+  }
+  .pp-label {
+    margin-top: 3cqw;
+    padding-bottom: 0.7cqw;
+    border-bottom: 0.15cqw solid var(--color-line);
+    font-family: var(--font-sans);
+    font-size: 2.85cqw;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+  }
+  .pp-tiles {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.2cqw;
+    margin-top: 1.6cqw;
+  }
+  .pp-tile {
+    padding: 1.4cqw 1cqw;
+    border-radius: 1.2cqw;
+    background: var(--color-canvas);
+    text-align: center;
+  }
+  .pp-tile span {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: 2.85cqw;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .pp-tile b {
+    display: block;
+    margin-top: 0.3cqw;
+    font-size: 3.5cqw;
+  }
+  .pp-note {
+    margin-top: 1.6cqw;
+    padding-left: 2cqw;
+    border-left: 0.6cqw solid var(--color-primary);
+    font-style: italic;
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+  .pp-kv {
+    display: grid;
+    grid-template-columns: 29cqw minmax(0, 1fr);
+    margin-top: 1.2cqw;
+  }
+  .pp-kv dt,
+  .pp-kv dd {
+    padding: 0.8cqw 0;
+    border-bottom: 0.12cqw solid var(--color-line);
+  }
+  .pp-kv dt {
+    font-family: var(--font-sans);
+    font-size: 2.85cqw;
+    color: var(--color-muted);
+  }
+  .pp-kv dd {
+    font-weight: 650;
+  }
+
+  /* Bas de page : signature, cachet, mention */
+  .pp-bottom {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 3cqw;
+    margin-top: auto;
+    padding-top: 2cqw;
+  }
+  .pp-sign {
+    margin-left: auto;
+    width: 41cqw;
+    text-align: center;
+    line-height: 1.4;
+  }
+  .pp-seal {
+    position: relative;
+    height: 11.5cqw;
+    margin-top: 0.2cqw;
+  }
+  .pp-stamp {
+    position: absolute;
+    left: 3cqw;
+    top: -1.2cqw;
+    width: 13.5cqw;
+    height: 13.5cqw;
+    mix-blend-mode: multiply;
+  }
+  .pp-sig {
+    position: absolute;
+    right: 0;
+    top: 0.6cqw;
+    width: 24cqw;
+    height: 9cqw;
+  }
+  .pp-signname {
+    display: inline-block;
+    padding: 0 1.5cqw 0.2cqw;
+    border-bottom: 0.3cqw solid var(--color-ink);
+    font-weight: 700;
+  }
+  .pp-foot {
+    margin-top: 2cqw;
+    padding-top: 1.3cqw;
+    border-top: 0.15cqw solid var(--color-line);
+    text-align: center;
+    font-family: var(--font-sans);
+    font-size: 2.85cqw;
+    line-height: 1.35;
+    color: var(--color-muted);
+  }
+</style>

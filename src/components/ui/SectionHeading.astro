@@ -1,0 +1,25 @@
+---
+/** En-tête de section : étiquette facultative, titre h2 en serif, sous-titre. */
+interface Props {
+  title: string;
+  eyebrow?: string;
+  subtitle?: string;
+  align?: "center" | "left";
+  /** id du h2, à reprendre dans <Section labelledby> */
+  id?: string;
+  class?: string;
+}
+const { title, eyebrow, subtitle, align = "center", id, class: className } = Astro.props;
+---
+
+<div
+  class:list={[
+    "max-w-2xl",
+    align === "center" ? "mx-auto text-center" : "text-left",
+    className,
+  ]}
+>
+  {eyebrow && <p class="type-label mb-3">{eyebrow}</p>}
+  <h2 id={id} class="type-h2">{title}</h2>
+  {subtitle && <p class="type-lead mt-4">{subtitle}</p>}
+</div>

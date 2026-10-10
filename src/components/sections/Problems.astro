@@ -1,0 +1,92 @@
+---
+import Section from "../ui/Section.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import Badge from "../ui/Badge.astro";
+import SansScoly from "../illustrations/SansScoly.astro";
+import AvecScoly from "../illustrations/AvecScoly.astro";
+import { sectionIds } from "../../config/site";
+
+/**
+ * Section « Ce que Scoly change au quotidien » (#pourquoi) : deux rangées en zigzag.
+ * Rangée 1 : illustration à gauche, texte à droite. Rangée 2 : texte à gauche, illustration à droite.
+ * < 1024 px : une colonne, l'illustration toujours au-dessus du texte (elle précède le texte dans le HTML).
+ * Illustrations décoratives (aria-hidden) : le texte porte tout le sens.
+ */
+const rows = [
+  {
+    key: "sans",
+    badge: "Sans Scoly",
+    tone: "neutral",
+    title: "Quand la paperasse prend toute la place",
+    text: "Vous le savez : chaque certificat, chaque attestation se rédige à la main ou se retape, avec les mêmes informations d’élève recopiées encore et encore. Une erreur se glisse vite, et il faut tout reprendre. Les anciens documents dorment dans des classeurs qu’il faut fouiller, et chacun garde sa propre version du dossier. Tout ce temps passé à recopier, c’est du temps que le secrétariat ne consacre pas à autre chose.",
+    reverse: false,
+  },
+  {
+    key: "avec",
+    badge: "Avec Scoly",
+    tone: "brand",
+    title: "Avec Scoly, chaque chose trouve sa place",
+    text: "Vous saisissez les informations d’un élève une seule fois, ou vous importez votre fichier Excel ou CSV. Ensuite, le certificat ou l’attestation se génère en quelques clics, avec l’en-tête et la signature de votre établissement, sans rien recopier. Chaque document établi est conservé dans les archives, et vous le retrouvez grâce à la recherche. Toute l’équipe travaille sur les mêmes données, chacun avec son compte et son rôle.",
+    reverse: true,
+  },
+] as const;
+---
+
+<Section id={sectionIds.problems} labelledby="pourquoi-titre">
+  <div data-reveal>
+    <SectionHeading
+      id="pourquoi-titre"
+      title="Ce que Scoly change au quotidien"
+      subtitle="Les tâches administratives restent les mêmes. Elles demandent simplement moins de recopie et de recherche."
+    />
+  </div>
+
+  <div class="mt-14 flex flex-col gap-16 sm:mt-16 lg:mt-20 lg:gap-24">
+    {
+      rows.map((row) => (
+        <div
+          data-reveal
+          class="grid items-center gap-8 sm:gap-10 lg:grid-cols-2 lg:gap-16"
+        >
+          <div
+            aria-hidden="true"
+            class:list={[
+              "mx-auto aspect-[4/3] w-full max-w-[34rem] lg:max-w-[540px]",
+              row.reverse ? "lg:order-last lg:mr-0 lg:ml-auto" : "lg:mr-auto lg:ml-0",
+            ]}
+          >
+            {row.key === "sans" ? (
+              <SansScoly class="block h-auto w-full" />
+            ) : (
+              <AvecScoly class="block h-auto w-full" />
+            )}
+          </div>
+
+          <div class:list={["mx-auto w-full max-w-[34rem]", row.reverse ? "lg:mr-0 lg:ml-0" : "lg:ml-0"]}>
+            <Badge tone={row.tone}>{row.badge}</Badge>
+            <h3 class="pb-title mt-4">{row.title}</h3>
+            <p class="pb-text mt-5">{row.text}</p>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</Section>
+
+<style>
+  /* Titre de rangée : serif du design system (type-h3), en plus grand que l'échelle h3 standard
+     (20 → 24 px) pour tenir son rôle de titre de rangée sous le h2 (30 → 44 px). */
+  .pb-title {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.375rem); /* 28 → 38 px */
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
+  }
+  .pb-text {
+    font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem); /* 17 → 19 px */
+    line-height: 1.7;
+    color: var(--color-muted);
+  }
+</style>

@@ -1,0 +1,33 @@
+---
+import Base from "../layouts/Base.astro";
+import Navbar from "../components/layout/Navbar.astro";
+import Footer from "../components/layout/Footer.astro";
+import Hero from "../components/sections/Hero.astro";
+import Problems from "../components/sections/Problems.astro";
+import HowItWorks from "../components/sections/HowItWorks.astro";
+import Documents from "../components/sections/Documents.astro";
+import Features from "../components/sections/Features.astro";
+import Pricing from "../components/sections/Pricing.astro";
+import Faq from "../components/sections/Faq.astro";
+import FinalCta from "../components/sections/FinalCta.astro";
+import { buildJsonLd } from "../lib/jsonld";
+
+// Un seul bloc @graph, construit depuis site.ts, pricing.ts et faq.ts ; « < » échappé par sécurité
+const jsonLd = JSON.stringify(buildJsonLd()).replace(/</g, "\\u003c");
+---
+
+<Base>
+  <script slot="head" type="application/ld+json" set:html={jsonLd} />
+  <Navbar />
+  <main id="contenu" tabindex="-1" class="outline-none">
+    <Hero />
+    <Problems />
+    <HowItWorks />
+    <Documents />
+    <Features />
+    <Pricing />
+    <Faq />
+    <FinalCta />
+  </main>
+  <Footer />
+</Base>

@@ -1,0 +1,200 @@
+---
+import Section from "../ui/Section.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import CertificatScolarite from "../documents/CertificatScolarite.astro";
+import AttestationInscription from "../documents/AttestationInscription.astro";
+import FicheEleve from "../documents/FicheEleve.astro";
+import AttestationTransfert from "../documents/AttestationTransfert.astro";
+import DemandeTransfert from "../documents/DemandeTransfert.astro";
+import { sectionIds } from "../../config/site";
+
+/**
+ * Section « Documents » (#documents) : le visiteur choisit un type de document et voit un aperçu
+ * réaliste, construit en HTML/CSS avec des données fictives (src/components/documents/).
+ *
+ * - Onglets en pilule (motif ARIA tablist / tab / tabpanel), logique dans src/scripts/documents-tabs.ts.
+ * - Les cinq panneaux sont dans le HTML ; seul le premier est visible, les autres sont `hidden`
+ *   (aucun délai au clic, texte présent pour le référencement).
+ * - Sans JavaScript : la pilule est masquée et les cinq panneaux s'affichent en liste.
+ * - Bureau (≥ 1024 px) : aperçu à gauche (≈ 55 %), texte à droite. Dessous : une colonne, aperçu au-dessus.
+ * - Hauteur de l'aperçu réservée : toutes les feuilles ont le même ratio A4 et la même largeur.
+ *
+ * Textes de référence repris tels quels (apostrophes ’).
+ */
+const common = "Chaque document reprend le logo, l’en-tête et la signature de votre établissement.";
+const caption = "Aperçu illustratif, avec des données fictives.";
+
+const docs = [
+  {
+    id: "certificat-scolarite",
+    label: "Certificat de scolarité",
+    description:
+      "Atteste qu’un élève est inscrit dans votre établissement pour l’année scolaire en cours.",
+    Preview: CertificatScolarite,
+  },
+  {
+    id: "attestation-inscription",
+    label: "Attestation d’inscription",
+    description:
+      "Confirme l’inscription d’un élève et se remet aux familles qui en font la demande.",
+    Preview: AttestationInscription,
+  },
+  {
+    id: "fiche-eleve",
+    label: "Fiche élève",
+    description: "Rassemble sur une page les informations enregistrées pour un élève.",
+    Preview: FicheEleve,
+  },
+  {
+    id: "attestation-transfert",
+    label: "Attestation de transfert",
+    description:
+      "Délivrée à l’élève qui quitte votre établissement pour en rejoindre un autre.",
+    Preview: AttestationTransfert,
+  },
+  {
+    id: "demande-transfert",
+    label: "Demande de transfert",
+    description:
+      "Formalise la demande de transfert d’un élève vers un autre établissement.",
+    Preview: DemandeTransfert,
+  },
+];
+---
+
+<Section id={sectionIds.documents} labelledby="documents-titre">
+  <div data-reveal>
+    <SectionHeading
+      id="documents-titre"
+      title="Les documents que Scoly génère pour vous"
+      subtitle="Choisissez un document pour en voir un aperçu."
+    />
+  </div>
+
+  <div data-docs class="docs mt-10 sm:mt-12" data-reveal data-delay="0.1">
+    <div class="docs-tabs flex justify-center">
+      <div
+        role="tablist"
+        aria-labelledby="documents-titre"
+        class="docs-pill relative flex max-w-full overflow-x-auto rounded-full border border-line bg-surface p-1 shadow-card"
+      >
+        {
+          docs.map((doc, i) => (
+            <button
+              type="button"
+              role="tab"
+              id={`docs-tab-${doc.id}`}
+              aria-selected={i === 0 ? "true" : "false"}
+              aria-controls={`docs-panel-${doc.id}`}
+              tabindex={i === 0 ? 0 : -1}
+              class="docs-tab min-h-11 shrink-0 cursor-pointer rounded-full px-4 py-2 text-[0.9375rem] font-medium whitespace-nowrap text-muted transition-colors duration-200 outline-offset-1 hover:text-ink motion-reduce:transition-none aria-selected:bg-primary aria-selected:text-on-primary aria-selected:hover:text-on-primary sm:px-5"
+            >
+              {doc.label}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="docs-panels mt-8 sm:mt-10 lg:mt-12">
+      {
+        docs.map((doc, i) => (
+          <div
+            role="tabpanel"
+            id={`docs-panel-${doc.id}`}
+            aria-labelledby={`docs-tab-${doc.id}`}
+            tabindex="0"
+            hidden={i > 0}
+            class="docs-panel grid items-center gap-8 outline-offset-8 lg:grid-cols-[minmax(0,11fr)_minmax(0,9fr)] lg:gap-14"
+          >
+            <div class="docs-preview">
+              <div class="docs-stage mx-auto flex max-w-[34rem] justify-center rounded-[1.75rem] border border-brand-100 bg-brand-50 p-3 sm:rounded-[2rem] sm:p-8 lg:max-w-none lg:p-10 dark:border-brand-400/20 dark:bg-brand-400/10">
+                <div class="docs-sheet w-full max-w-[26rem]">
+                  <doc.Preview />
+                </div>
+              </div>
+              <p class="mt-3 text-center text-[0.8125rem] leading-snug text-muted">{caption}</p>
+            </div>
+            <div class="docs-text mx-auto max-w-[34rem] lg:mx-0 lg:max-w-none">
+              <h3 class="docs-title">{doc.label}</h3>
+              <p class="docs-desc mt-4 text-ink">{doc.description}</p>
+              <p class="type-small mt-5">{common}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <p class="type-lead mx-auto mt-12 max-w-xl text-center sm:mt-14" data-reveal>
+    Et d’autres documents administratifs scolaires pris en charge par l’application.
+  </p>
+</Section>
+
+<script>
+  import "../../scripts/documents-tabs";
+</script>
+
+<style is:global>
+  /* Titre du document : plus grand qu'un h3 courant, plus petit que le h2 de la section */
+  .docs-title {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: clamp(1.75rem, 1.4rem + 1.6vw, 2.5rem);
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
+  }
+  .docs-desc {
+    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
+    line-height: 1.6;
+  }
+  .docs-preview {
+    min-width: 0;
+  }
+
+  /* Pilule : défile horizontalement sans barre visible */
+  .docs-pill {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overscroll-behavior-x: contain;
+  }
+  .docs-pill::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Sans JavaScript : pas d'onglets (inutilisables), les cinq panneaux s'affichent en liste */
+  .docs-panels {
+    display: grid;
+  }
+  html:not(.js) .docs-tabs {
+    display: none;
+  }
+  html:not(.js) .docs-panels {
+    gap: 4.5rem;
+  }
+  /* Le `!important` de Tailwind sur [hidden] vit dans @layer base : un !important hors couche perdrait,
+     donc cette règle est dans la même couche (la spécificité tranche). */
+  @layer base {
+    html:not(.js) .docs-panel[hidden] {
+      display: grid !important;
+    }
+  }
+
+  /* Changement d'aperçu : fondu court avec léger déplacement (aucune animation en mouvement réduit) */
+  @media (prefers-reduced-motion: no-preference) {
+    .docs-panel.docs-in {
+      animation: docs-in 250ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+  }
+  @keyframes docs-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

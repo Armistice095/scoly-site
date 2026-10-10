@@ -1,0 +1,279 @@
+---
+/**
+ * Page de travail : valide les tokens et les composants de base dans les deux thèmes.
+ * noindex, hors sitemap, Disallow dans robots.txt.
+ * À RETIRER AVANT LA MISE EN LIGNE (étape 11) : supprimer ce fichier, le filtre du sitemap
+ * dans astro.config.mjs et la ligne Disallow de public/robots.txt.
+ */
+import Base from "../layouts/Base.astro";
+import Container from "../components/ui/Container.astro";
+import Section from "../components/ui/Section.astro";
+import SectionHeading from "../components/ui/SectionHeading.astro";
+import Button from "../components/ui/Button.astro";
+import Badge from "../components/ui/Badge.astro";
+import Card from "../components/ui/Card.astro";
+import Icon from "../components/ui/Icon.astro";
+import Logo from "../components/ui/Logo.astro";
+import { iconNames } from "../components/ui/icons";
+import SansScoly from "../components/illustrations/SansScoly.astro";
+import AvecScoly from "../components/illustrations/AvecScoly.astro";
+
+const tokens = [
+  ["canvas", "bg-canvas"],
+  ["surface", "bg-surface"],
+  ["tile", "bg-tile"],
+  ["line", "bg-line"],
+  ["ink", "bg-ink"],
+  ["muted", "bg-muted"],
+  ["primary", "bg-primary"],
+  ["primary-hover", "bg-primary-hover"],
+  ["on-primary", "bg-on-primary"],
+  ["accent", "bg-accent"],
+  ["badge", "bg-badge"],
+  ["badge-ink", "bg-badge-ink"],
+  ["focus", "bg-focus"],
+] as const;
+const brand = ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900", "950"] as const;
+const brandCls: Record<string, string> = {
+  "50": "bg-brand-50", "100": "bg-brand-100", "200": "bg-brand-200", "300": "bg-brand-300",
+  "400": "bg-brand-400", "500": "bg-brand-500", "600": "bg-brand-600", "700": "bg-brand-700",
+  "800": "bg-brand-800", "900": "bg-brand-900", "950": "bg-brand-950",
+};
+const scale = [
+  ["type-h1", "Titre de page (h1)", "h1", "36 → 60 px"],
+  ["type-h2", "Titre de section (h2)", "h2", "30 → 44 px"],
+  ["type-h3", "Titre de carte (h3)", "h3", "20 → 24 px"],
+  ["type-lead", "Sous-titre : une ou deux phrases courtes qui expliquent la section.", "p", "17 → 20 px"],
+  ["type-body", "Texte courant : phrases courtes, vocabulaire de tous les jours.", "p", "16 px"],
+  ["type-small", "Texte secondaire, légendes et précisions.", "p", "15 px"],
+  ["type-label", "Étiquette", "p", "13 px"],
+] as const;
+---
+
+<Base title="Styleguide | Scoly" noindex>
+  <header class="border-b border-line bg-surface">
+    <Container class="flex items-center justify-between gap-4 py-4">
+      <a href="/" aria-label="Scoly, accueil"><Logo class="h-9" /></a>
+      <div class="flex items-center gap-3">
+        <span class="type-small hidden sm:inline">Page de travail</span>
+        <!-- Bouton temporaire : la vraie bascule est créée à l'étape 1 (navbar) -->
+        <button
+          type="button"
+          data-theme-toggle
+          aria-pressed="false"
+          aria-label="Thème sombre"
+          class="inline-flex size-11 items-center justify-center rounded-full border border-line bg-surface text-ink hover:bg-tile"
+        >
+          <Icon name="moon" class="size-5 dark:hidden" />
+          <Icon name="sun" class="hidden size-5 dark:block" />
+        </button>
+      </div>
+    </Container>
+  </header>
+
+  <main id="contenu" tabindex="-1" class="outline-none">
+    <!-- PALETTE -->
+    <Section labelledby="sg-palette">
+      <SectionHeading
+        id="sg-palette"
+        align="left"
+        eyebrow="Couleurs"
+        title="Palette, thème clair et sombre"
+        subtitle="Les deux panneaux ci-dessous sont forcés dans chaque thème, quel que soit celui de la page."
+      />
+      <div class="mt-10 grid gap-6 lg:grid-cols-2">
+        {
+          (["light", "dark"] as const).map((theme) => (
+            <div data-panel={theme} class:list={[theme, "rounded-card border border-line bg-canvas p-5 text-ink sm:p-6"]}>
+              <h3 class="type-h3 mb-4">{theme === "light" ? "Thème clair" : "Thème sombre"}</h3>
+              <ul class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {tokens.map(([name, cls]) => (
+                  <li class="min-w-0">
+                    <div class:list={[cls, "h-14 rounded-xl border border-line"]} data-swatch={name} />
+                    <p class="mt-1.5 text-[0.8125rem] leading-tight font-medium">{name}</p>
+                    <p class="font-mono text-xs text-muted" data-hex={name}>&nbsp;</p>
+                  </li>
+                ))}
+              </ul>
+              <h4 class="type-small mt-6 mb-2 font-semibold text-ink">Contrastes mesurés</h4>
+              <table class="w-full text-left text-[0.8125rem]">
+                <thead class="text-muted">
+                  <tr><th class="py-1 font-medium">Paire</th><th class="py-1 font-medium">Rapport</th><th class="py-1 font-medium">Seuil</th></tr>
+                </thead>
+                <tbody data-contrast></tbody>
+              </table>
+            </div>
+          ))
+        }
+      </div>
+      <h3 class="type-h3 mt-10 mb-4">Marque (identique dans les deux thèmes)</h3>
+      <ul class="grid grid-cols-4 gap-3 sm:grid-cols-6 lg:grid-cols-11">
+        {
+          brand.map((n) => (
+            <li>
+              <div class:list={[brandCls[n], "h-12 rounded-xl border border-line"]} />
+              <p class="mt-1.5 font-mono text-xs text-muted">brand-{n}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </Section>
+
+    <!-- TYPOGRAPHIE -->
+    <Section tone="alt" labelledby="sg-typo">
+      <SectionHeading id="sg-typo" align="left" eyebrow="Typographie" title="Échelle typographique" subtitle="Tailles fluides : redimensionnez la fenêtre pour voir l’échelle s’adapter." />
+      <div class="mt-10 divide-y divide-line">
+        {
+          scale.map(([cls, sample, tag, size]) => (
+            <div class="grid gap-2 py-5 md:grid-cols-[12rem_1fr] md:gap-8">
+              <p class="font-mono text-xs text-muted">
+                .{cls}
+                <br />
+                {size}
+              </p>
+              {tag === "h1" && <p class={cls}>{sample}</p>}
+              {tag === "h2" && <p class={cls}>{sample}</p>}
+              {tag === "h3" && <p class={cls}>{sample}</p>}
+              {tag === "p" && <p class={`${cls} max-w-2xl`}>{sample}</p>}
+            </div>
+          ))
+        }
+      </div>
+    </Section>
+
+    <!-- BOUTONS -->
+    <Section labelledby="sg-buttons">
+      <SectionHeading id="sg-buttons" align="left" eyebrow="Composants" title="Boutons" subtitle="Survolez et parcourez avec la touche Tab pour voir les états. Hauteur minimale de 44 px." />
+      <div class="mt-10 space-y-8">
+        {
+          (["primary", "secondary", "ghost"] as const).map((variant) => (
+            <div>
+              <p class="type-small mb-3 font-mono">variant="{variant}"</p>
+              <div class="flex flex-wrap items-center gap-3">
+                <Button variant={variant}>Libellé</Button>
+                <Button variant={variant} size="lg">Libellé, grand</Button>
+                <Button variant={variant} icon="arrow-right">Avec icône</Button>
+                <Button variant={variant} href="https://app.scoly.ink/verifier" external>Lien externe</Button>
+                <Button variant={variant} href="#sg-buttons">Lien interne</Button>
+                <Button variant={variant} disabled>Désactivé</Button>
+                <Button variant={variant} data-force-focus>Focus</Button>
+              </div>
+            </div>
+          ))
+        }
+        <div>
+          <p class="type-small mb-3 font-mono">block</p>
+          <div class="max-w-sm"><Button block size="lg">Pleine largeur</Button></div>
+        </div>
+      </div>
+    </Section>
+
+    <!-- BADGES ET CARTES -->
+    <Section tone="alt" labelledby="sg-cards">
+      <SectionHeading id="sg-cards" align="left" eyebrow="Composants" title="Badges et cartes" />
+      <div class="mt-10 flex flex-wrap gap-3">
+        <Badge>Actif</Badge>
+        <Badge tone="neutral">Brouillon</Badge>
+        <Badge tone="outline">Archivé</Badge>
+        <Badge><Icon name="check" class="size-3.5" />Avec icône</Badge>
+      </div>
+      <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          [
+            ["file", "Carte avec pastille", "Texte secondaire de la carte, sur deux ou trois lignes au plus."],
+            ["archive", "Carte sans lien", "Même rayon, même bordure, même ombre que dans l’application."],
+            ["shield", "Carte avec action", "Un lien en bas de carte, comme « Établir » dans l’application."],
+          ].map(([icon, title, text], i) => (
+            <Card as="li">
+              <span class="mb-5 inline-flex size-12 items-center justify-center rounded-xl bg-tile text-ink">
+                <Icon name={icon as never} class="size-5" />
+              </span>
+              <h3 class="type-h3">{title}</h3>
+              <p class="type-small mt-2">{text}</p>
+              {i === 2 && (
+                <a href="#sg-cards" class="mt-5 inline-flex min-h-11 items-center gap-1.5 text-[0.9375rem] font-medium text-accent hover:underline">
+                  Action <Icon name="arrow-right" class="size-4" />
+                </a>
+              )}
+            </Card>
+          ))
+        }
+      </ul>
+    </Section>
+
+    <!-- ICONES -->
+    <Section labelledby="sg-icons">
+      <SectionHeading id="sg-icons" align="left" eyebrow="Composants" title="Icônes" />
+      <ul class="mt-10 grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
+        {
+          iconNames.map((n) => (
+            <li class="flex flex-col items-center gap-2 rounded-xl border border-line bg-surface p-4 text-ink">
+              <Icon name={n} class="size-6" />
+              <span class="font-mono text-[0.6875rem] text-muted">{n}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </Section>
+
+    <!-- EN-TETES DE SECTION -->
+    <Section tone="alt" labelledby="sg-headings">
+      <SectionHeading id="sg-headings" align="left" eyebrow="Composants" title="En-têtes de section" />
+      <div class="mt-10 grid gap-10 md:grid-cols-2">
+        <SectionHeading eyebrow="Étiquette" title="Titre centré" subtitle="Sous-titre d’exemple, sur une ou deux lignes." />
+        <SectionHeading align="left" title="Titre aligné à gauche, sans étiquette" />
+      </div>
+    </Section>
+
+    <!-- ILLUSTRATIONS -->
+    <Section labelledby="sg-illustrations">
+      <SectionHeading
+        id="sg-illustrations"
+        align="left"
+        eyebrow="Illustrations"
+        title="Scènes SVG du kit"
+        subtitle="Outil de relecture : les deux scènes de la section « pourquoi », dans le thème de la page. Règles dans docs/ILLUSTRATIONS.md."
+      />
+      <div class="mt-10 grid gap-8 md:grid-cols-2">
+        <figure>
+          <div class="aspect-[4/3] w-full"><SansScoly class="block h-auto w-full" /></div>
+          <figcaption class="type-small mt-3">SansScoly.astro : désordre, tons désaturés, accent sur la pile de papiers.</figcaption>
+        </figure>
+        <figure>
+          <div class="aspect-[4/3] w-full"><AvecScoly class="block h-auto w-full" /></div>
+          <figcaption class="type-small mt-3">AvecScoly.astro : même bureau, ordonné, couleurs de la marque, coche en accent.</figcaption>
+        </figure>
+      </div>
+    </Section>
+  </main>
+
+  <script>
+    // Hex et rapports de contraste mesurés sur le rendu réel de chaque panneau
+    const lum = (r: number, g: number, b: number) => {
+      const f = (c: number) => ((c /= 255) <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+      return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+    };
+    const rgb = (css: string) => (css.match(/[\d.]+/g) ?? []).slice(0, 3).map(Number) as [number, number, number];
+    const hex = (c: number[]) => "#" + c.map((v) => Math.round(v).toString(16).padStart(2, "0")).join("");
+    const ratio = (a: number[], b: number[]) => {
+      const [x, y] = [lum(...(a as [number, number, number])), lum(...(b as [number, number, number]))];
+      return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
+    };
+    const pairs: [string, string, number][] = [
+      ["ink", "canvas", 4.5], ["ink", "surface", 4.5], ["muted", "canvas", 4.5], ["muted", "surface", 4.5],
+      ["muted", "tile", 4.5], ["on-primary", "primary", 4.5], ["on-primary", "primary-hover", 4.5],
+      ["accent", "surface", 4.5], ["badge-ink", "badge", 4.5], ["focus", "canvas", 3], ["focus", "surface", 3],
+    ];
+    document.querySelectorAll<HTMLElement>("[data-panel]").forEach((panel) => {
+      const color = (t: string) => rgb(getComputedStyle(panel.querySelector(`[data-swatch="${t}"]`)!).backgroundColor);
+      panel.querySelectorAll<HTMLElement>("[data-hex]").forEach((el) => (el.textContent = hex(color(el.dataset.hex!))));
+      const body = panel.querySelector("[data-contrast]")!;
+      pairs.forEach(([fg, bg, min]) => {
+        const r = ratio(color(fg), color(bg));
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td class="py-0.5 pr-2">${fg} / ${bg}</td><td class="py-0.5 pr-2 font-mono">${r.toFixed(2)}:1</td><td class="py-0.5">${r >= min ? "OK" : "ÉCHEC"} (${min}:1)</td>`;
+        body.appendChild(tr);
+      });
+    });
+  </script>
+</Base>

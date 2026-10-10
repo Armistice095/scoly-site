@@ -1,0 +1,31 @@
+---
+/** Aperçu : certificat de scolarité. Structure reprise de l'exemple fourni, données fictives. */
+import Paper from "./Paper.astro";
+import PaperHeader from "./PaperHeader.astro";
+import PaperSign from "./PaperSign.astro";
+import PaperFooter from "./PaperFooter.astro";
+import Qr from "./Qr.astro";
+import { sample } from "./sample";
+---
+
+<Paper label="Aperçu d’un certificat de scolarité, données fictives">
+  <PaperHeader />
+  <p class="pp-title">Certificat de scolarité</p>
+  <p class="pp-ref">{sample.ref}</p>
+  <p class="pp-p">
+    Je soussigné, Directeur de l’{sample.school}, certifie que l’élève <b>{sample.student}</b>, né(e) le <b>{sample.birthDate}</b>,
+    matricule <b>{sample.matricule}</b>, est inscrit dans notre établissement et y poursuit ses
+    études en classe de <b>{sample.grade}</b>, au titre de l’année scolaire <b>{sample.year}</b>.
+  </p>
+  <p class="pp-label">Appréciations</p>
+  <div class="pp-tiles">
+    <div class="pp-tile"><span>Assiduité</span><b>Régulière</b></div>
+    <div class="pp-tile"><span>Conduite</span><b>Bonne</b></div>
+    <div class="pp-tile"><span>Travail</span><b>Satisfaisant</b></div>
+  </div>
+  <p class="pp-label">Observations / décision</p>
+  <p class="pp-note">Passage en classe supérieure</p>
+  <p class="pp-p">Certificat délivré pour servir et valoir ce que de droit.</p>
+  <PaperSign><Qr /></PaperSign>
+  <PaperFooter />
+</Paper>

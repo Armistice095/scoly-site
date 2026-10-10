@@ -1,0 +1,19 @@
+---
+/**
+ * Repère visible uniquement en développement (import.meta.env.DEV) pour les emplacements
+ * de section pas encore réalisés (hauteur minimale 70 vh pour tester le scrollspy et les ancres). Ne produit rien dans le build de production.
+ */
+interface Props {
+  label: string;
+  step: number;
+}
+const { label, step } = Astro.props;
+---
+
+{
+  import.meta.env.DEV && (
+    <p class="flex min-h-[70vh] items-center justify-center rounded-card border border-dashed border-line p-6 text-center font-mono text-sm text-muted">
+      {label} · à venir (étape {step})
+    </p>
+  )
+}

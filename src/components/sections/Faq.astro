@@ -1,0 +1,224 @@
+---
+import Section from "../ui/Section.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import Icon from "../ui/Icon.astro";
+import { sectionIds } from "../../config/site";
+import { faqItems, faqCopy } from "../../config/faq";
+import type { FaqLink } from "../../config/faq";
+
+/**
+ * Section « FAQ » (#faq) : huit questions en accordéon, données dans `src/config/faq.ts`.
+ *
+ * <details> / <summary> natifs : fonctionnent sans JavaScript, les réponses sont dans le HTML.
+ * Pas de h3 dans les <summary> (voir journal) : le h2 nomme la section, chaque <summary> est un contrôle
+ * d'ouverture. Plusieurs éléments peuvent être ouverts ; le premier l'est au chargement.
+ * Animation : `::details-content` + `interpolate-size` (CSS pur), sans effet si le navigateur ne les gère
+ * pas (ouverture instantanée) et supprimée en mouvement réduit.
+ *
+ * Bureau (≥ 1024 px) : colonne gauche collante (titre, sous-titre, aide) et accordéon à droite.
+ * En dessous : titre centré, accordéon, puis la ligne d'aide. La ligne d'aide est donc rendue deux fois
+ * (une seule visible selon la largeur) pour garder l'ordre de lecture et de tabulation = ordre visuel.
+ */
+const help: FaqLink = faqCopy.helpLink;
+---
+
+<Section id={sectionIds.faq} labelledby="faq-titre">
+  <div class="faq-layout">
+    <div class="faq-aside">
+      <div data-reveal>
+        <SectionHeading
+          id="faq-titre"
+          title={faqCopy.title}
+          subtitle={faqCopy.subtitle}
+          class="lg:mx-0 lg:text-left"
+        />
+      </div>
+      <p class="faq-help faq-help--desktop type-small">
+        {faqCopy.helpText}{" "}
+        <a href={help.href} class="faq-link">{help.label}</a>
+      </p>
+    </div>
+
+    <div class="faq-card" data-reveal data-delay="0.1">
+      {
+        faqItems.map((item, i) => (
+          <details class="faq-item" open={i === 0 ? true : undefined}>
+            <summary class="faq-q">
+              <span>{item.question}</span>
+              <Icon name="chevron-down" class="faq-chevron size-5" />
+            </summary>
+            <div class="faq-a">
+              <div class="faq-a-inner">
+                <p>{item.answer}</p>
+                {item.link && (
+                  <p class="faq-a-link">
+                    <a
+                      href={item.link.href}
+                      class="faq-link"
+                      target={item.link.external ? "_blank" : undefined}
+                      rel={item.link.external ? "noopener noreferrer" : undefined}
+                    >
+                      {item.link.label}
+                      {item.link.external && <Icon name="external" class="size-4" />}
+                      {item.link.external && <span class="sr-only">{" "}(s’ouvre dans un nouvel onglet)</span>}
+                    </a>
+                  </p>
+                )}
+              </div>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+
+    <p class="faq-help faq-help--mobile type-small">
+      {faqCopy.helpText}{" "}
+      <a href={help.href} class="faq-link">{help.label}</a>
+    </p>
+  </div>
+</Section>
+
+<style is:global>
+  .faq-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.5rem;
+    margin-inline: auto;
+    max-width: 48rem;
+  }
+  .faq-help {
+    margin: 0;
+    text-align: center;
+  }
+  .faq-help--desktop {
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .faq-layout {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+      gap: 4rem;
+      max-width: none;
+      align-items: start;
+    }
+    .faq-aside {
+      position: sticky;
+      top: 7rem; /* sous la barre (72 px) + 40 px */
+    }
+    .faq-help {
+      text-align: left;
+    }
+    .faq-help--desktop {
+      display: block;
+      margin-top: 2rem;
+    }
+    .faq-help--mobile {
+      display: none;
+    }
+  }
+
+  .faq-card {
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-card);
+  }
+  .faq-item + .faq-item {
+    border-top: 1px solid var(--color-line);
+  }
+
+  .faq-q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 3.5rem;
+    padding: 1.125rem 1.25rem;
+    cursor: pointer;
+    list-style: none;
+    font-weight: 600;
+    font-size: 1.125rem; /* 18 px */
+    line-height: 1.45;
+    color: var(--color-ink);
+  }
+  .faq-q::-webkit-details-marker {
+    display: none;
+  }
+  .faq-q:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: -3px; /* à l'intérieur : la carte coupe tout ce qui dépasse */
+  }
+  @media (hover: hover) {
+    .faq-q:hover {
+      background-color: var(--color-tile);
+    }
+  }
+  .faq-chevron {
+    color: var(--color-muted);
+  }
+  .faq-item[open] .faq-chevron {
+    transform: rotate(180deg);
+  }
+
+  .faq-a-inner {
+    padding: 0 1.25rem 1.5rem;
+    max-width: 40rem;
+    font-size: 1.0625rem; /* 17 px */
+    line-height: 1.7;
+    color: var(--color-muted);
+  }
+  .faq-a-inner p {
+    margin: 0;
+  }
+  .faq-a-link {
+    margin-top: 0.75rem !important;
+  }
+  @media (min-width: 640px) {
+    .faq-q {
+      padding-inline: 1.75rem;
+    }
+    .faq-a-inner {
+      padding-inline: 1.75rem;
+    }
+  }
+
+  .faq-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-weight: 600;
+    color: var(--color-brand-600);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+  .dark .faq-link {
+    color: var(--color-brand-300);
+  }
+  .faq-link:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  /* Animation d'ouverture : hauteur interpolée sur le contenu du <details>. Sans prise en charge,
+     ou en mouvement réduit, l'ouverture est instantanée. */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (interpolate-size: allow-keywords) {
+      .faq-item {
+        interpolate-size: allow-keywords;
+      }
+      .faq-item::details-content {
+        height: 0;
+        overflow: clip;
+        transition:
+          height 260ms ease,
+          content-visibility 260ms ease allow-discrete;
+      }
+      .faq-item[open]::details-content {
+        height: auto;
+      }
+      .faq-chevron {
+        transition: transform 260ms ease;
+      }
+    }
+  }
+</style>

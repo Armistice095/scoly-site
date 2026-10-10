@@ -1,0 +1,28 @@
+---
+/** Aperçu : attestation de transfert. Données fictives. */
+import Paper from "./Paper.astro";
+import PaperHeader from "./PaperHeader.astro";
+import PaperSign from "./PaperSign.astro";
+import PaperFooter from "./PaperFooter.astro";
+import { sample } from "./sample";
+---
+
+<Paper label="Aperçu d’une attestation de transfert, données fictives">
+  <PaperHeader />
+  <p class="pp-title">Attestation de transfert</p>
+  <p class="pp-ref">{sample.ref}</p>
+  <p class="pp-p">
+    Le Directeur de l’{sample.school} atteste que l’élève <b>{sample.student}</b>, inscrit dans notre
+    établissement en <b>{sample.year}</b>, le quitte pour en rejoindre un autre.
+  </p>
+  <dl class="pp-kv">
+    <dt>Nom et prénom</dt><dd>{sample.student}</dd>
+    <dt>Matricule</dt><dd>{sample.matricule}</dd>
+    <dt>Classe d’origine</dt><dd>{sample.grade}</dd>
+    <dt>Date de départ</dt><dd>{sample.date}</dd>
+    <dt>Établissement d’accueil</dt><dd>Établissement d’accueil</dd>
+  </dl>
+  <p class="pp-p">La présente attestation est délivrée pour servir et valoir ce que de droit.</p>
+  <PaperSign />
+  <PaperFooter />
+</Paper>

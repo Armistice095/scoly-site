@@ -1,0 +1,19 @@
+---
+/** Carte : fond de carte, bordure fine, grand rayon, ombre très légère. */
+interface Props {
+  /** Balise HTML (article, li, div…) */
+  as?: string;
+  padding?: "none" | "md" | "lg";
+  class?: string;
+  [attr: string]: unknown;
+}
+const { as: Tag = "div", padding = "md", class: className, ...rest } = Astro.props;
+const paddings = { none: "", md: "p-6", lg: "p-6 sm:p-8" };
+---
+
+<Tag
+  class:list={["rounded-card border border-line bg-surface shadow-card", paddings[padding], className]}
+  {...rest}
+>
+  <slot />
+</Tag>

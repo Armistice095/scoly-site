@@ -1,0 +1,89 @@
+---
+import "../styles/global.css";
+import { seo } from "../config/seo";
+// Polices du premier affichage (sous-ensemble latin) : préchargées pour éviter un changement de police tardif
+import interLatin from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
+import newsreaderLatin from "@fontsource-variable/newsreader/files/newsreader-latin-wght-normal.woff2?url";
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Empêche l'indexation de la page (404, pages légales en brouillon…) */
+  noindex?: boolean;
+}
+const {
+  title = seo.title,
+  description = seo.description,
+  noindex = false,
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(seo.ogImage.path, Astro.site);
+// Même page, lien « même document » : le navigateur gère le focus (le scroll Lenis n'intercepte que href="#…")
+const skipHref = `${Astro.url.pathname}#contenu`;
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/icon-192.png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={newsreaderLatin} as="font" type="font/woff2" crossorigin />
+    <meta name="theme-color" content="#f7f8fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#171b24" media="(prefers-color-scheme: dark)" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content="Scoly" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content={String(seo.ogImage.width)} />
+    <meta property="og:image:height" content={String(seo.ogImage.height)} />
+    <meta property="og:image:alt" content={seo.ogImage.alt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={seo.ogImage.alt} />
+
+    <!-- Thème + flag JS, exécutés avant le rendu pour éviter tout flash -->
+    <script is:inline>
+      document.documentElement.classList.add("js");
+      try {
+        const saved = localStorage.getItem("theme");
+        const dark = saved ? saved === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.classList.toggle("dark", dark);
+      } catch {}
+    </script>
+
+    <slot name="head" />
+  </head>
+  <body>
+    <a
+      href={skipHref}
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-control focus:bg-primary focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-on-primary"
+    >
+      Aller au contenu
+    </a>
+
+    <slot />
+
+    <script>
+      // Preline : uniquement les plugins utilisés (le bundle complet pèse ~500 Ko)
+      import "preline/plugins/collapse";
+      import "preline/plugins/accordion";
+      import "../scripts/theme"; // bascule clair / sombre ([data-theme-toggle])
+      import "../scripts/motion"; // Lenis + GSAP
+    </script>
+  </body>
+</html>

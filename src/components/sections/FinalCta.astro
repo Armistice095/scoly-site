@@ -1,0 +1,194 @@
+---
+import Section from "../ui/Section.astro";
+import Button from "../ui/Button.astro";
+import { sectionIds, site, demoWhatsappLink, demoEmailLink } from "../../config/site";
+
+/**
+ * CTA final (#contact) : bloc arrondi bleu marine, texte centré. Cible des liens « Nous contacter » et #contact.
+ * Bouton secondaire : WhatsApp (message de démonstration), à défaut e-mail, sinon absent.
+ * Ligne de contact : seulement si l'e-mail existe. Sans secondaire ni e-mail, seul le bouton principal reste, centré.
+ * Rubans SVG décoratifs (style du Hero) ; léger flottement CSS, supprimé en mouvement réduit.
+ */
+const demo = demoWhatsappLink
+  ? { href: demoWhatsappLink, external: true }
+  : demoEmailLink
+    ? { href: demoEmailLink, external: false }
+    : null;
+const email = site.contact.email;
+---
+
+<Section id={sectionIds.finalCta} labelledby="contact-titre" class="pt-4! sm:pt-6! lg:pt-10!">
+  <div class="fc-block" data-reveal>
+    <svg class="fc-ribbons" viewBox="0 0 1200 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+      <path class="fc-r1" d="M-80 120C140 20 320 40 430 110C520 170 600 190 700 150L700-60L-80-60Z"></path>
+      <path class="fc-r2" d="M1280 330C1100 290 940 330 860 420C800 490 740 530 660 560L1280 600Z"></path>
+    </svg>
+
+    <div class="fc-content">
+      <h2 id="contact-titre" class="fc-title">Établissez votre premier document dès aujourd’hui</h2>
+      <p class="fc-text">
+        Créez l’espace de votre établissement gratuitement, ajoutez vos élèves et générez vos premiers documents. Si vous préférez en parler d’abord, nous vous montrons Scoly en démonstration.
+      </p>
+
+      <div class="fc-actions">
+        <Button href={site.links.signup} size="lg" class="fc-primary w-full sm:w-auto">Essayer gratuitement</Button>
+        {
+          demo && (
+            <Button
+              href={demo.href}
+              external={demo.external}
+              variant="secondary"
+              size="lg"
+              class="fc-secondary w-full sm:w-auto"
+            >
+              Demander une démonstration
+            </Button>
+          )
+        }
+      </div>
+
+      {
+        email && (
+          <p class="fc-contact">
+            Une question&nbsp;? Écrivez-nous&nbsp;: <a href={`mailto:${email}`}>{email}</a>
+          </p>
+        )
+      }
+    </div>
+  </div>
+</Section>
+
+<style is:global>
+  .fc-block {
+    --fc-bg: #1e3a5f;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: 2rem;
+    background-color: var(--fc-bg);
+    color: #fff;
+    padding: 3.5rem 1.5rem;
+  }
+  .dark .fc-block {
+    --fc-bg: #152a49;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+  }
+  @media (min-width: 640px) {
+    .fc-block {
+      padding: 4.5rem 3rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .fc-block {
+      padding: 6rem 4rem;
+      border-radius: 2.5rem;
+    }
+  }
+
+  .fc-ribbons {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  .fc-r1 {
+    fill: #fff;
+    fill-opacity: 0.07;
+  }
+  .fc-r2 {
+    fill: #8fb0e0;
+    fill-opacity: 0.12;
+  }
+
+  .fc-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 44rem;
+    margin-inline: auto;
+    text-align: center;
+  }
+  .fc-title {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: clamp(1.875rem, 1.2rem + 2.6vw, 3rem);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    color: #fff;
+    text-wrap: balance;
+  }
+  .fc-text {
+    margin: 1.25rem 0 0;
+    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+    line-height: 1.6;
+    color: rgb(255 255 255 / 0.84);
+    text-wrap: pretty;
+  }
+  .fc-actions {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 2.25rem;
+  }
+  @media (min-width: 640px) {
+    .fc-actions {
+      flex-direction: row;
+    }
+  }
+  .fc-block .fc-primary {
+    background-color: #fff;
+    color: #1e3a5f;
+  }
+  .fc-block .fc-primary:hover {
+    background-color: #e4ecf8;
+  }
+  .fc-block .fc-secondary {
+    background-color: transparent;
+    border-color: rgb(255 255 255 / 0.75);
+    color: #fff;
+  }
+  .fc-block .fc-secondary:hover {
+    background-color: rgb(255 255 255 / 0.12);
+  }
+  .fc-block a:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 3px;
+  }
+  .fc-contact {
+    margin: 1.5rem 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: rgb(255 255 255 / 0.84);
+  }
+  .fc-contact a {
+    color: #fff;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .fc-contact a:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .fc-r1 {
+      animation: fc-float 9s ease-in-out infinite alternate;
+    }
+    .fc-r2 {
+      animation: fc-float 11s ease-in-out infinite alternate-reverse;
+    }
+    @keyframes fc-float {
+      from {
+        transform: translateY(0);
+      }
+      to {
+        transform: translateY(10px);
+      }
+    }
+  }
+</style>

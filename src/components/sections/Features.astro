@@ -1,0 +1,197 @@
+---
+import Section from "../ui/Section.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import Icon from "../ui/Icon.astro";
+import { sectionIds } from "../../config/site";
+import type { IconName } from "../ui/icons";
+
+/**
+ * Section « Fonctionnalités » (#fonctionnalites) : six capacités en grille, sans cartes.
+ * Les cellules sont séparées par des filets fins (token `line`) : le conteneur est teinté `line`,
+ * l'écart de 1 px entre cellules laisse apparaître le filet, et chaque cellule repose sur `surface`.
+ * Filets sur les côtés gauche et droit de la grille (dès 640 px), jamais en haut ni en bas.
+ *
+ * Bureau (≥ 1024 px) : 3 colonnes × 2 lignes. Tablette (640 à 1023 px) : 2 colonnes. Mobile : 1 colonne.
+ * Six cellules se répartissent sans case vide dans les trois configurations.
+ *
+ * Survol (appareils qui survolent seulement) : dégradé très léger en fond, barre verticale qui passe
+ * au bleu marine, titre qui glisse de 10 px. Décoratif : cellules non interactives. Le glissement
+ * est retiré en mouvement réduit, les changements de couleur restent.
+ * Le `data-reveal` est posé sur le contenu de la cellule (pas sur la cellule) pour que le filet
+ * ne bouge pas pendant l'apparition.
+ *
+ * Textes de référence repris tels quels : apostrophes ’, espace insécable (\u00a0) avant « : » et « ? ».
+ */
+interface Feature {
+  icon: IconName;
+  title: string;
+  text: string;
+}
+const features: Feature[] = [
+  {
+    icon: "file",
+    title: "Génération automatique",
+    text: "Certificats, attestations, fiches élèves\u00a0: les documents se remplissent à partir des informations déjà enregistrées.",
+  },
+  {
+    icon: "pen",
+    title: "À l’image de votre école",
+    text: "Chaque document porte le logo, l’en-tête et la signature de votre établissement.",
+  },
+  {
+    icon: "upload",
+    title: "Import Excel ou CSV",
+    text: "Vous avez déjà vos listes d’élèves\u00a0? Importez-les au lieu de tout ressaisir.",
+  },
+  {
+    icon: "archive",
+    title: "Archives et recherche",
+    text: "Chaque document établi est conservé. Une recherche suffit pour le retrouver, même des mois plus tard.",
+  },
+  {
+    icon: "users",
+    title: "Comptes et rôles",
+    text: "Invitez votre équipe par e-mail. Chacun a son compte et son rôle, et vous décidez qui peut établir des documents.",
+  },
+  {
+    icon: "shield",
+    title: "Vérification en ligne",
+    text: "Toute personne qui reçoit un document peut en vérifier l’authenticité sur une page publique.",
+  },
+];
+---
+
+<Section id={sectionIds.features} tone="alt" labelledby="fonctionnalites-titre">
+  <div data-reveal>
+    <SectionHeading
+      id="fonctionnalites-titre"
+      title="Tout ce qu’il faut pour tenir vos documents en ordre"
+      subtitle="Des outils simples, pensés pour le travail quotidien d’un secrétariat scolaire."
+    />
+  </div>
+
+  <ul class="ft-grid mx-auto mt-12 max-w-6xl list-none p-0 sm:mt-14 lg:mt-16">
+    {
+      features.map((f, i) => (
+        <li class="ft-cell">
+          <div class="ft-inner" data-reveal data-delay={(i * 0.08).toFixed(2)}>
+            <Icon name={f.icon} class="size-7 text-brand-600 dark:text-brand-300" />
+            <h3 class="ft-title">
+              <span class="ft-bar" aria-hidden="true" />
+              <span class="ft-label">{f.title}</span>
+            </h3>
+            <p class="ft-text">{f.text}</p>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<style>
+  .ft-grid {
+    --ft-pad: 2rem; /* 32 px (mobile) */
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1px;
+    background-color: var(--color-line);
+  }
+  @media (min-width: 640px) {
+    .ft-grid {
+      --ft-pad: 2.5rem; /* 40 px */
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-rows: 1fr; /* toutes les cellules à la même hauteur */
+      border-inline: 1px solid var(--color-line);
+    }
+  }
+  @media (min-width: 1024px) {
+    .ft-grid {
+      --ft-pad: 3rem; /* 48 px */
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .ft-cell {
+    position: relative;
+    padding: var(--ft-pad);
+    background-color: var(--color-surface);
+  }
+  /* Dégradé de survol : un calque dont seule l'opacité change (un dégradé ne se fond pas lui-même) */
+  .ft-cell::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(to bottom, var(--color-brand-50), transparent);
+    opacity: 0;
+    transition: opacity 220ms ease;
+    pointer-events: none;
+  }
+  :global(.dark) .ft-cell::before {
+    background-image: linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--color-brand-400) 12%, transparent),
+      transparent
+    );
+  }
+
+  .ft-inner {
+    position: relative;
+  }
+
+  /* Titre : interligne de 28 px = hauteur de la barre, qui reste alignée sur la ligne du titre */
+  .ft-title {
+    position: relative;
+    margin-top: 1.25rem;
+    font-family: var(--font-sans);
+    font-size: 1.25rem; /* 20 px */
+    font-weight: 600;
+    line-height: 1.75rem;
+    letter-spacing: -0.005em;
+    color: var(--color-ink);
+  }
+  .ft-label {
+    display: inline-block;
+    transition: transform 220ms ease;
+  }
+  /* Barre au bord de la cellule (le padding de la cellule la sépare du titre) */
+  .ft-bar {
+    position: absolute;
+    top: 0;
+    left: calc(var(--ft-pad) * -1);
+    width: 4px;
+    height: 28px;
+    border-radius: 9999px;
+    background-color: var(--color-line);
+    transition: background-color 220ms ease;
+  }
+  .ft-text {
+    margin-top: 0.75rem;
+    max-width: 30rem;
+    font-size: 1rem; /* 16 px, jamais moins */
+    line-height: 1.7;
+    color: var(--color-muted);
+  }
+
+  @media (hover: hover) {
+    .ft-cell:hover::before {
+      opacity: 1;
+    }
+    .ft-cell:hover .ft-bar {
+      background-color: var(--color-brand-950);
+    }
+    :global(.dark) .ft-cell:hover .ft-bar {
+      background-color: var(--color-brand-300);
+    }
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .ft-cell:hover .ft-label {
+      transform: translateX(10px);
+    }
+  }
+  /* Mouvement réduit : les couleurs changent toujours, rien ne glisse */
+  @media (prefers-reduced-motion: reduce) {
+    .ft-label {
+      transition: none;
+    }
+  }
+</style>

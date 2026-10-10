@@ -1,0 +1,28 @@
+---
+/** Aperçu : attestation d'inscription. Données fictives. */
+import Paper from "./Paper.astro";
+import PaperHeader from "./PaperHeader.astro";
+import PaperSign from "./PaperSign.astro";
+import PaperFooter from "./PaperFooter.astro";
+import { sample } from "./sample";
+---
+
+<Paper label="Aperçu d’une attestation d’inscription, données fictives">
+  <PaperHeader />
+  <p class="pp-title">Attestation d’inscription</p>
+  <p class="pp-ref">{sample.ref}</p>
+  <p class="pp-p">
+    Le Directeur de l’{sample.school} atteste que l’élève <b>{sample.student}</b> est inscrit dans notre
+    établissement pour l’année scolaire <b>{sample.year}</b>.
+  </p>
+  <dl class="pp-kv">
+    <dt>Nom et prénom</dt><dd>{sample.student}</dd>
+    <dt>Né(e) le</dt><dd>{sample.birthDate}</dd>
+    <dt>Matricule</dt><dd>{sample.matricule}</dd>
+    <dt>Classe</dt><dd>{sample.grade}</dd>
+    <dt>Année scolaire</dt><dd>{sample.year}</dd>
+  </dl>
+  <p class="pp-p">La présente attestation est remise à la famille, sur sa demande, pour servir et valoir ce que de droit.</p>
+  <PaperSign />
+  <PaperFooter />
+</Paper>

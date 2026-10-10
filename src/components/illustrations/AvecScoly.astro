@@ -1,0 +1,138 @@
+---
+/**
+ * Scène « Avec Scoly » : même bureau, ordonné et lumineux. Fenêtre d'application (fiche élève + certificat),
+ * une personne assise, une personne debout avec une pastille de rôle, une coche en accent.
+ * Décorative (aria-hidden) : le texte voisin porte le sens. Couleurs : variables --ill-*.
+ */
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 640 480"
+  width="640"
+  height="480"
+  class={className}
+  aria-hidden="true"
+  focusable="false"
+>
+  <path
+    class="fb"
+    d="M84 130C118 56 258 30 366 52c96 20 190 4 232 96 34 80 0 150-30 212-40 72-174 88-286 82C186 436 72 428 44 336 22 262 52 192 84 130Z"
+  ></path>
+  <path class="sl" stroke-width="3" d="M40 421H612M64 70h.1M594 78v14M587 85h14M30 300h.1M612 270h.1"></path>
+
+  <g transform="translate(214 32) scale(.905) translate(-150 -44)">
+  <rect class="fl" x="150" y="52" width="360" height="232" rx="18"></rect>
+  <rect class="fs" x="150" y="44" width="360" height="232" rx="18"></rect>
+  <path class="fd" d="M150 62a18 18 0 0 1 18-18h324a18 18 0 0 1 18 18v22H150Z"></path>
+  <circle class="fs" cx="170" cy="64" r="4"></circle>
+  <circle class="fl" cx="184" cy="64" r="4"></circle>
+  <circle class="fl" cx="198" cy="64" r="4"></circle>
+  <rect class="fs" x="366" y="53" width="128" height="22" rx="11"></rect>
+  <rect class="fl" x="378" y="62" width="50" height="4" rx="2"></rect>
+  <circle class="sr" stroke-width="2.4" cx="478" cy="63" r="5"></circle>
+  <path class="sr" stroke-width="2.4" d="M482 67l5 5"></path>
+
+  <rect class="f2" x="164" y="96" width="130" height="168" rx="12"></rect>
+  <circle class="fb" cx="190" cy="124" r="18"></circle>
+  <circle class="k2" cx="190" cy="119" r="6.5"></circle>
+  <path class="fh" d="M183.500 118c0-6 4-8 7-8s7 2 7 8c-3-3-11-3-14 0Z"></path>
+  <path class="c1" d="M177 137a13 11 0 0 1 26 0c-5 4-21 4-26 0Z"></path>
+  <rect class="fn" x="216" y="114" width="62" height="7" rx="3.500"></rect>
+  <rect class="fl" x="216" y="127" width="42" height="6" rx="3"></rect>
+  <path class="fl" d="M176 158h32v5h-32ZM176 186h26v5h-26ZM176 214h36v5h-36Z"></path>
+  <rect class="fs" x="176" y="166" width="106" height="12" rx="6"></rect>
+  <rect class="fs" x="176" y="194" width="106" height="12" rx="6"></rect>
+  <rect class="fs" x="176" y="222" width="106" height="12" rx="6"></rect>
+  <path class="fl" d="M184 172h50M184 200h38M184 228h58" stroke="var(--ill-navy)" stroke-width="3" stroke-linecap="round" opacity=".5"></path>
+  <rect class="fr" x="176" y="244" width="46" height="12" rx="6"></rect>
+
+  <rect class="fs" x="306" y="94" width="194" height="172" rx="8"></rect>
+  <rect class="sl" stroke-width="2" x="306" y="94" width="194" height="172" rx="8"></rect>
+  <path class="fr" d="M306 102a8 8 0 0 1 8-8h178a8 8 0 0 1 8 8v20H306Z"></path>
+  <circle class="fs" cx="326" cy="108" r="7"></circle>
+  <rect class="fs" x="340" y="102" width="74" height="5" rx="2.500"></rect>
+  <rect class="fs" x="340" y="111" width="48" height="4" rx="2"></rect>
+  <rect class="fn" x="370" y="136" width="66" height="8" rx="4"></rect>
+  <path class="fl" d="M330 156h146v5H330ZM330 168h146v5H330ZM330 180h104v5H330Z"></path>
+  <circle class="fd" cx="350" cy="228" r="19"></circle>
+  <circle class="ss" stroke-width="2" cx="350" cy="228" r="13"></circle>
+  <circle class="fs" cx="350" cy="228" r="4"></circle>
+  <path class="sn" stroke-width="2.600" d="M404 234c8-16 12 6 20-6s10 8 22-2 8 4 16-2"></path>
+  <path class="sl" stroke-width="2" d="M400 244h72"></path>
+
+  <g class="i-pop">
+    <circle class="fa" cx="490" cy="122" r="17"></circle>
+    <path class="ss" stroke-width="4.500" d="M482 122l6 6 11-13"></path>
+  </g>
+
+  </g>
+
+  <g class="i-sway">
+    <path class="fg" d="M72 384C58 366 60 342 72 328c11 14 13 38 0 56Z"></path>
+    <path class="fg" d="M72 384C54 376 44 356 46 338c16 6 30 24 26 46Z" opacity=".85"></path>
+    <path class="fg" d="M72 384c4-20 18-36 34-40 2 18-10 36-34 40Z" opacity=".85"></path>
+  </g>
+  <path class="fo" d="M56 384h32l-4 36H60Z"></path>
+
+  <rect class="fp" x="152" y="358" width="8" height="52" rx="3"></rect>
+  <path class="sp" stroke-width="6" d="M118 414h84"></path>
+  <circle class="fp" cx="122" cy="416" r="5"></circle>
+  <circle class="fp" cx="198" cy="416" r="5"></circle>
+  <rect class="c3" x="106" y="262" width="15" height="90" rx="7"></rect>
+  <rect class="c3" x="106" y="343" width="104" height="15" rx="7"></rect>
+
+  <rect class="fp" x="140" y="322" width="98" height="25" rx="12"></rect>
+  <rect class="fp" x="216" y="330" width="23" height="80" rx="11"></rect>
+  <ellipse class="fp" cx="242" cy="412" rx="22" ry="8"></ellipse>
+
+  <rect class="c3" x="256" y="316" width="10" height="102" rx="3"></rect>
+  <rect class="c3" x="484" y="316" width="10" height="102" rx="3"></rect>
+  <path class="fl" d="M274 284H472l26 22H248Z"></path>
+  <rect class="c3" x="248" y="306" width="250" height="11" rx="4"></rect>
+
+  <path class="c1" d="M136 347c-4-36 6-62 32-76l30 4c10 24 8 48 4 72Z"></path>
+  <rect class="k1" x="176" y="244" width="14" height="28" rx="6"></rect>
+  <circle class="k1" cx="186" cy="224" r="22"></circle>
+  <path class="fh" d="M164 230c-5-22 8-38 28-35 13 2 17 11 14 18-7-7-20-6-27 1-3 4-4 10-3 16Z"></path>
+  <circle class="k2" cx="179" cy="231" r="4"></circle>
+  <circle class="k1" cx="208" cy="228" r="3.500"></circle>
+  <circle class="fh" cx="199" cy="221" r="1.700"></circle>
+  <path class="sc1" stroke-width="17" d="M178 282l24 22"></path>
+  <path class="sk1" stroke-width="11" d="M202 304l62-6"></path>
+
+  <rect class="c3" x="256" y="299" width="96" height="8" rx="4"></rect>
+  <rect class="fp" x="270" y="250" width="64" height="52" rx="6"></rect>
+  <circle class="fs" cx="302" cy="276" r="6"></circle>
+
+  <rect class="fr" x="366" y="268" width="15" height="17" rx="3"></rect>
+  <path class="sr" stroke-width="3" d="M381 272q7 2 0 9"></path>
+  <path class="fs" d="M396 286h54l8 14h-54Z"></path>
+  <path class="f2" d="M398 282h54l8 14h-54Z"></path>
+  <path class="fs" d="M400 278h54l8 14h-54Z"></path>
+  <path class="sl" stroke-width="2" d="M410 286h28"></path>
+
+  <g transform="translate(17 0)">
+  <g class="i-float">
+    <rect class="fs" x="530" y="188" width="62" height="24" rx="12"></rect>
+    <path class="fs" d="M555 211l6 8 6-8Z"></path>
+    <circle class="fr" cx="544" cy="200" r="6"></circle>
+    <rect class="fl" x="556" y="197" width="26" height="6" rx="3"></rect>
+  </g>
+  <rect class="fp" x="546" y="352" width="14" height="58" rx="7"></rect>
+  <rect class="fp" x="566" y="352" width="14" height="58" rx="7"></rect>
+  <ellipse class="fp" cx="552" cy="411" rx="12" ry="6"></ellipse>
+  <ellipse class="fp" cx="574" cy="411" rx="12" ry="6"></ellipse>
+  <path class="c2" d="M538 300c0-14 10-20 25-20s25 6 25 20l-4 58H542Z"></path>
+  <path class="sc2" stroke-width="12" d="M542 302l-6 38M584 302l6 38"></path>
+  <circle class="k3" cx="536" cy="343" r="6"></circle>
+  <circle class="k3" cx="590" cy="343" r="6"></circle>
+  <rect class="k3" x="557" y="272" width="12" height="14" rx="5"></rect>
+  <circle class="k3" cx="563" cy="256" r="21"></circle>
+  <path class="fh" d="M542 256c-2-16 8-24 22-24 14 0 21 10 20 24-4-8-10-12-20-12-9 0-16 4-22 12Z"></path>
+  </g>
+</svg>

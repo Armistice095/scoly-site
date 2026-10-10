@@ -1,0 +1,134 @@
+---
+import { heroVideo } from "../../config/site";
+
+/**
+ * Cadre « fenêtre de navigateur » qui accueille la vidéo de présentation de l'application.
+ * - Sans vidéo (valeurs de `heroVideo` à null) : zone douce aux couleurs de la marque + icône Scoly.
+ *   Aucun faux écran, aucun texte inventé. En développement seulement : étiquette « Vidéo à venir ».
+ * - Avec vidéo (poster + au moins une source) : lecteur muet en boucle, géré par `src/scripts/video-frame.ts`
+ *   (lecture seulement quand visible, pause / lecture accessible, respect de prefers-reduced-motion et saveData).
+ * L'espace 16:9 est réservé dans les deux cas : aucun décalage de mise en page au chargement.
+ */
+interface Props {
+  video?: typeof heroVideo;
+  class?: string;
+}
+const { video = heroVideo, class: className } = Astro.props;
+const { webm, mp4, poster, label } = video;
+// Le poster est obligatoire : sans lui, on reste sur le cadre sans vidéo.
+const hasVideo = Boolean(poster && (webm || mp4));
+// Dimensions déclarées (16:9). Le cadre garde ce rapport quelle que soit la taille du fichier fourni.
+const width = 1920;
+const height = 1080;
+---
+
+<figure
+  data-video-frame
+  aria-label={hasVideo ? label : undefined}
+  aria-hidden={hasVideo ? undefined : "true"}
+  class:list={[
+    "m-0 overflow-hidden rounded-card border border-line bg-surface shadow-soft",
+    className,
+  ]}
+>
+  <!-- Barre de fenêtre : décor pur (trois points + adresse de l'application) -->
+  <div
+    aria-hidden="true"
+    class="flex h-10 items-center gap-3 border-b border-line bg-canvas px-4 sm:h-11 sm:px-5"
+  >
+    <span class="flex shrink-0 gap-1.5">
+      <span class="size-2.5 rounded-full bg-ink/15 sm:size-3"></span>
+      <span class="size-2.5 rounded-full bg-ink/15 sm:size-3"></span>
+      <span class="size-2.5 rounded-full bg-ink/15 sm:size-3"></span>
+    </span>
+    <span
+      class="mx-auto flex h-6 min-w-0 max-w-64 flex-1 items-center justify-center rounded-full border border-line bg-surface px-3 text-xs text-muted sm:h-7"
+    >
+      <span class="truncate">app.scoly.ink</span>
+    </span>
+    <!-- Contrepoids des trois points, pour centrer l'adresse -->
+    <span class="hidden w-[3.25rem] shrink-0 sm:block"></span>
+  </div>
+
+  {
+    hasVideo ? (
+      <div class="group relative aspect-video bg-tile">
+        <video
+          class="absolute inset-0 size-full object-cover"
+          width={width}
+          height={height}
+          poster={poster}
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          tabindex="-1"
+        >
+          {webm && <source src={webm} type="video/webm" />}
+          {mp4 && <source src={mp4} type="video/mp4" />}
+        </video>
+        <button
+          type="button"
+          data-video-toggle
+          data-playing="false"
+          aria-label="Lire la vidéo"
+          class="video-toggle absolute right-3 bottom-3 size-11 items-center justify-center rounded-full border border-line bg-surface/90 text-ink shadow-card transition-colors hover:bg-surface sm:right-4 sm:bottom-4"
+        >
+          <svg
+            class="icon-play size-5"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z" />
+          </svg>
+          <svg
+            class="icon-pause size-5"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <rect x="6" y="5" width="4" height="14" rx="1" />
+            <rect x="14" y="5" width="4" height="14" rx="1" />
+          </svg>
+        </button>
+      </div>
+    ) : (
+      <div class="relative flex aspect-video items-center justify-center bg-linear-to-br from-brand-50 via-badge to-brand-100 dark:from-badge dark:via-tile dark:to-surface">
+        <img
+          src="/icon-scoly-192.webp"
+          alt=""
+          width="192"
+          height="192"
+          decoding="async"
+          class="size-20 sm:size-28 lg:size-32"
+        />
+        {import.meta.env.DEV && (
+          <span class="absolute bottom-3 left-3 rounded-full border border-dashed border-line bg-surface px-3 py-1 font-mono text-xs text-muted">
+            Vidéo à venir
+          </span>
+        )}
+      </div>
+    )
+  }
+</figure>
+
+<style>
+  /* Sans JavaScript, le bouton ne ferait rien : il n'apparaît qu'avec la classe .js (posée dans <head>) */
+  .video-toggle {
+    display: none;
+  }
+  :global(.js) .video-toggle {
+    display: inline-flex;
+  }
+  .video-toggle[data-playing="true"] .icon-play,
+  .video-toggle[data-playing="false"] .icon-pause {
+    display: none;
+  }
+</style>
+
+<script>
+  import "../../scripts/video-frame";
+</script>

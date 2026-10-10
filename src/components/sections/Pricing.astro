@@ -1,0 +1,297 @@
+---
+import Section from "../ui/Section.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import Button from "../ui/Button.astro";
+import Badge from "../ui/Badge.astro";
+import Icon from "../ui/Icon.astro";
+import { sectionIds } from "../../config/site";
+import {
+  plans,
+  pricingCopy,
+  formatAmount,
+  monthlyLine,
+  priceForScreenReaders,
+  resolveDestination,
+} from "../../config/pricing";
+
+/**
+ * Section « Tarifs » (#tarifs) : quatre formules, données dans `src/config/pricing.ts`
+ * (aucun prix ni libellé en dur ici).
+ *
+ * Bureau (≥ 1280 px) : 4 colonnes. Tablette (640 à 1279 px) : 2 × 2. Mobile : 1 colonne.
+ * Chaque carte est un sous-grille (`subgrid`) de 6 rangées : nom, prix, équivalent mensuel,
+ * description, bouton, liste. Les rangées se partagent entre cartes d'une même ligne : prix, boutons et
+ * listes sont donc alignés d'une carte à l'autre, sans hauteur fixée.
+ * La formule recommandée est mise en avant par un anneau, un badge texte, une ombre et un bouton principal,
+ * sans changer sa taille. Aucun JavaScript propre à la section (apparition : `data-reveal`).
+ */
+const links = plans.map((p) => resolveDestination(p.cta.destination));
+---
+
+<Section id={sectionIds.pricing} labelledby="tarifs-titre" class="pr-section border-y border-line">
+  <div data-reveal>
+    <SectionHeading id="tarifs-titre" title={pricingCopy.title} subtitle={pricingCopy.subtitle} />
+  </div>
+
+  <div class="pr-grid mx-auto mt-12 sm:mt-14 lg:mt-16">
+    {
+      plans.map((plan, i) => {
+        const monthly = monthlyLine(plan);
+        const link = links[i];
+        const label = `${plan.cta.label} : ${plan.name}`;
+        const ariaLabel = link.external ? `${label} (s’ouvre dans un nouvel onglet)` : label;
+        return (
+          <article
+            class:list={["pr-card", plan.recommended && "pr-card--rec"]}
+            aria-labelledby={`tarif-${plan.id}`}
+            data-reveal
+            data-delay={(i * 0.08).toFixed(2)}
+          >
+            <h3 id={`tarif-${plan.id}`} class="pr-name">
+              {plan.name}
+            </h3>
+            {plan.recommended && (
+              <Badge class="pr-badge">
+                {pricingCopy.recommendedBadge}
+              </Badge>
+            )}
+
+            <p class="pr-price">
+              <span class="sr-only">{priceForScreenReaders(plan)}</span>
+              <span class="pr-price-vis" aria-hidden="true">
+                {plan.from && <span class="pr-from">{pricingCopy.fromLabel}</span>}
+                <span class="pr-amount">{formatAmount(plan.amount)}</span>
+                <span class="pr-unit">{pricingCopy.currency}</span>
+                {plan.period && <span class="pr-period">{plan.period}</span>}
+              </span>
+            </p>
+
+            <div class="pr-monthly">{monthly && <p>{monthly}</p>}</div>
+
+            <p class="pr-desc">{plan.description}</p>
+
+            <div class="pr-cta">
+              <Button
+                href={link.href}
+                external={link.external}
+                variant={plan.recommended ? "primary" : "secondary"}
+                block
+                class="pr-btn"
+                aria-label={ariaLabel}
+              >
+                {plan.cta.label}
+              </Button>
+            </div>
+
+            <ul class="pr-list" role="list">
+              {plan.features.map((f) => (
+                <li>
+                  <Icon name="check" class="pr-check size-5" />
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+          </article>
+        );
+      })
+    }
+  </div>
+
+  <p class="type-small mx-auto mt-8 max-w-2xl text-center" data-reveal>{pricingCopy.note}</p>
+</Section>
+
+<style is:global>
+  /* Fond de section teinté (même principe que « Comment ça marche ») : les cartes en `surface` s'y détachent. */
+  .pr-section {
+    background: color-mix(in srgb, var(--color-tile) 42%, var(--color-canvas));
+  }
+  .dark .pr-section {
+    background: color-mix(in srgb, #000 24%, var(--color-canvas));
+  }
+
+  .pr-grid {
+    --pr-pad: 1.75rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.75rem; /* entre cartes (le badge dépasse de 14 px au-dessus de la carte recommandée) */
+    max-width: 26rem;
+  }
+  @media (min-width: 640px) {
+    .pr-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2rem 1.5rem;
+      max-width: 48rem;
+    }
+  }
+  @media (min-width: 1280px) {
+    .pr-grid {
+      --pr-pad: 1.375rem;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1.25rem;
+      /* La grille déborde de 2 rem de chaque côté du conteneur (1 152 px au lieu de 1 088) :
+         sans cela, « 150 000 FCFA / an » ne tient pas sur une ligne dans une colonne de 257 px. */
+      width: calc(100% + 4rem);
+      margin-inline: -2rem;
+      max-width: none;
+    }
+
+  }
+
+  /* Carte = sous-grille de 6 rangées partagées avec les cartes voisines de la même ligne */
+  .pr-card {
+    position: relative;
+    display: grid;
+    grid-row: span 6;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+    padding: var(--pr-pad);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-card);
+    top: 0; /* survol : `top` et non `translate`, que GSAP (data-reveal) réécrit en ligne */
+    transition:
+      top 200ms ease,
+      box-shadow 200ms ease;
+  }
+  .pr-card--rec {
+    --pr-ring: var(--color-brand-600);
+    border-color: transparent;
+    box-shadow:
+      0 0 0 2px var(--pr-ring),
+      0 28px 56px -28px rgb(10 100 240 / 0.45),
+      0 2px 6px rgb(24 28 38 / 0.06);
+  }
+  .dark .pr-card--rec {
+    --pr-ring: var(--color-brand-300);
+    box-shadow:
+      0 0 0 2px var(--pr-ring),
+      0 28px 56px -26px rgb(0 0 0 / 0.8);
+  }
+  .pr-badge {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 3px var(--color-surface);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .pr-name {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 1.625rem; /* 26 px */
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+  }
+
+  .pr-price {
+    margin: 1.25rem 0 0;
+    align-self: end; /* nombres alignés d'une carte à l'autre, même avec « À partir de » */
+  }
+  .pr-price-vis {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 0.35rem;
+    color: var(--color-ink);
+  }
+  .pr-from {
+    flex-basis: 100%;
+    margin-bottom: 0.125rem;
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    color: var(--color-muted);
+  }
+  .pr-amount {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 2.75rem; /* 44 px */
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    font-variant-numeric: lining-nums;
+    white-space: nowrap;
+  }
+  .pr-unit {
+    font-size: 1.0625rem;
+    font-weight: 600;
+  }
+  .pr-period {
+    font-size: 0.9375rem;
+    color: var(--color-muted);
+    white-space: nowrap;
+  }
+
+  .pr-monthly p {
+    margin: 0.5rem 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    color: var(--color-muted);
+  }
+
+  .pr-desc {
+    margin: 1rem 0 0;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-muted);
+  }
+
+  .pr-cta {
+    margin-top: 1.5rem;
+    align-self: start;
+  }
+  /* Le libellé peut passer sur deux lignes plutôt que de déborder d'une colonne étroite */
+  .pr-btn {
+    padding-inline: 1rem;
+    white-space: normal !important;
+    text-align: center;
+  }
+
+  .pr-list {
+    margin: 1.5rem 0 0;
+    padding: 1.5rem 0 0;
+    list-style: none;
+    border-top: 1px solid var(--color-line);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .pr-list li {
+    display: flex;
+    gap: 0.625rem;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--color-ink);
+  }
+  .pr-check {
+    margin-top: 0.125rem;
+    color: var(--color-brand-600);
+  }
+  .dark .pr-check {
+    color: var(--color-brand-300);
+  }
+
+  /* 4 colonnes : nombre à 40 px et ligne mensuelle à 14 px pour tenir sur une ligne par colonne */
+  @media (min-width: 1280px) {
+    .pr-amount {
+      font-size: 2.5rem;
+    }
+    .pr-monthly p {
+      font-size: 0.875rem;
+    }
+  }
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .pr-card:hover {
+      top: -3px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pr-card {
+      transition: none;
+    }
+  }
+</style>

@@ -1,0 +1,143 @@
+---
+import Container from "../ui/Container.astro";
+import Logo from "../ui/Logo.astro";
+import Icon from "../ui/Icon.astro";
+import { footerGroups, legalGroupTitle } from "../../config/site";
+import { getPublishedLegal } from "../../lib/legal";
+
+/**
+ * Pied de page. Colonnes : `footerGroups` dans `site.ts` (liens `enabled: false` non rendus, colonne masquée
+ * si aucun lien actif). Titres de colonne : <p> reliés au groupe par aria-labelledby (pas de h2, pour ne pas
+ * ajouter de niveaux de titre à la page ; le footer est un repère de navigation).
+ * L'année est calculée à la compilation.
+ */
+// Hors page d'accueil, les ancres de section pointent vers l'accueil : « /#faq »
+const prefix = Astro.url.pathname === "/" ? "" : "/";
+// Colonne « Légal » : un lien par texte publié (draft: false) dans src/content/legal/, jamais saisi à la main
+const legalLinks = (await getPublishedLegal()).map((p) => ({
+  label: p.label,
+  href: `/${p.slug}`,
+  external: false,
+  enabled: true,
+}));
+const groups = [...footerGroups, { title: legalGroupTitle, links: legalLinks }]
+  .map((g) => ({
+    ...g,
+    links: g.links
+      .filter((l) => l.enabled && l.href)
+      .map((l) => ({ ...l, href: l.href.startsWith("#") ? `${prefix}${l.href}` : l.href })),
+  }))
+  .filter((g) => g.links.length > 0);
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-line bg-surface">
+  <Container class="pt-12 pb-8 sm:pt-16">
+    <div class="ft-wrap">
+      <div class="ft-brand">
+        <Logo class="h-9" />
+        <p class="ft-tagline">
+          Scoly simplifie la paperasserie scolaire en automatisant la création et l’organisation des documents administratifs.
+        </p>
+      </div>
+
+      <nav aria-label="Pied de page" class="ft-nav">
+        {
+          groups.map((g, i) => (
+            <div role="group" aria-labelledby={`pied-${i}`}>
+              <p id={`pied-${i}`} class="ft-col-title">{g.title}</p>
+              <ul role="list" class="ft-links">
+                {g.links.map((l) => (
+                  <li>
+                    <a
+                      href={l.href}
+                      target={l.external ? "_blank" : undefined}
+                      rel={l.external ? "noopener noreferrer" : undefined}
+                    >
+                      {l.label}
+                      {l.external && <Icon name="external" class="size-3.5" />}
+                      {l.external && <span class="sr-only">{" "}(s’ouvre dans un nouvel onglet)</span>}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </nav>
+    </div>
+
+    <div class="ft-bottom">
+      <p>© {year} Scoly. Tous droits réservés.</p>
+    </div>
+  </Container>
+</footer>
+
+<style is:global>
+  .ft-wrap {
+    display: grid;
+    gap: 2.5rem;
+  }
+  .ft-tagline {
+    margin: 1rem 0 0;
+    max-width: 32rem;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--color-muted);
+  }
+  .ft-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem 1.5rem;
+  }
+  @media (min-width: 1024px) {
+    .ft-wrap {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: 4rem;
+      align-items: start;
+    }
+    .ft-nav {
+      grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+    }
+  }
+  .ft-col-title {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--color-ink);
+  }
+  .ft-links {
+    margin: 0.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ft-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    min-height: 2.75rem; /* zone tactile ≥ 44 px */
+    font-size: 0.9375rem;
+    color: var(--color-muted);
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+    transition: color 150ms ease;
+  }
+  .ft-links a:hover,
+  .ft-links a:focus-visible {
+    color: var(--color-ink);
+  }
+  .ft-links a:hover {
+    text-decoration-line: underline;
+  }
+  .ft-bottom {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .ft-bottom p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--color-muted);
+  }
+</style>

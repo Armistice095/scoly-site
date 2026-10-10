@@ -1,0 +1,46 @@
+---
+/** Aperçu : fiche élève (une page d'informations). Données fictives. */
+import Paper from "./Paper.astro";
+import PaperHeader from "./PaperHeader.astro";
+import PaperFooter from "./PaperFooter.astro";
+import { sample } from "./sample";
+---
+
+<Paper label="Aperçu d’une fiche élève, données fictives">
+  <PaperHeader />
+  <p class="pp-title">Fiche élève</p>
+  <p class="pp-ref">Année scolaire {sample.year}</p>
+
+  <p class="pp-label">Identité</p>
+  <div style="display:flex;gap:3cqw;align-items:stretch">
+    <dl class="pp-kv" style="flex:1;min-width:0;grid-template-columns:24cqw minmax(0,1fr)">
+      <dt>Nom et prénom</dt><dd>{sample.student}</dd>
+      <dt>Né(e) le</dt><dd>{sample.birthDate}</dd>
+      <dt>Lieu de naissance</dt><dd>{sample.birthPlace}</dd>
+    </dl>
+    <svg
+      viewBox="0 0 40 50"
+      focusable="false"
+      style="flex:none;width:15cqw;height:18.75cqw;margin-top:1.6cqw;background:var(--color-canvas);border:0.15cqw solid var(--color-line);border-radius:1cqw"
+    >
+      <circle cx="20" cy="19" r="7" fill="var(--color-line)"></circle>
+      <path d="M6 46c0-9 6-14 14-14s14 5 14 14z" fill="var(--color-line)"></path>
+    </svg>
+  </div>
+
+  <p class="pp-label">Scolarité</p>
+  <dl class="pp-kv">
+    <dt>Matricule</dt><dd>{sample.matricule}</dd>
+    <dt>Classe</dt><dd>{sample.grade}</dd>
+    <dt>Année scolaire</dt><dd>{sample.year}</dd>
+    <dt>Statut</dt><dd>Inscrit</dd>
+  </dl>
+
+  <p class="pp-label">Responsable</p>
+  <dl class="pp-kv">
+    <dt>Nom et prénom</dt><dd>{sample.guardian}</dd>
+    <dt>Téléphone</dt><dd>{sample.phone}</dd>
+  </dl>
+  <div style="margin-top:auto"></div>
+  <PaperFooter />
+</Paper>

@@ -1,0 +1,16 @@
+{
+  // Déploiement Cloudflare (Workers Static Assets) : `npm run deploy`
+  // Worker du site vitrine. Ne pas confondre avec « scoly-web », qui sert app.scoly.ink.
+  "name": "scoly-site",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  },
+  // Domaines personnalisés : créés automatiquement au déploiement (enregistrements DNS proxifiés).
+  // Prérequis : aucun enregistrement existant pour « scoly.ink » ni « www » dans la zone DNS.
+  "routes": [
+    { "pattern": "scoly.ink", "custom_domain": true },
+    { "pattern": "www.scoly.ink", "custom_domain": true }
+  ]
+}

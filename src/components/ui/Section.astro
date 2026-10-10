@@ -1,0 +1,31 @@
+---
+import Container from "./Container.astro";
+
+/**
+ * Enveloppe d'une section de page : espacement vertical responsive, ancre, fond alterné,
+ * scroll-margin-top (la navbar est flottante) et aria-labelledby optionnel.
+ */
+interface Props {
+  id?: string;
+  /** « default » : fond de page. « alt » : fond de carte, bordé, pour alterner les sections. */
+  tone?: "default" | "alt";
+  class?: string;
+  /** id du titre qui nomme la section (aria-labelledby) */
+  labelledby?: string;
+  /** false : pas de Container interne (section pleine largeur, ex. hero) */
+  container?: boolean;
+}
+const { id, tone = "default", class: className, labelledby, container = true } = Astro.props;
+---
+
+<section
+  id={id}
+  aria-labelledby={labelledby}
+  class:list={[
+    "scroll-mt-24 py-16 sm:py-20 lg:py-28",
+    tone === "alt" && "border-y border-line bg-surface",
+    className,
+  ]}
+>
+  {container ? <Container><slot /></Container> : <slot />}
+</section>

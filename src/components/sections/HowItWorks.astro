@@ -1,0 +1,237 @@
+---
+import Section from "../ui/Section.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import Card from "../ui/Card.astro";
+import Icon from "../ui/Icon.astro";
+import Button from "../ui/Button.astro";
+import { sectionIds, site } from "../../config/site";
+import type { IconName } from "../ui/icons";
+
+/**
+ * Section « Comment ça marche » (#comment-ca-marche) : le parcours en trois étapes.
+ * Liste ordonnée <ol> de trois <li> : une pastille numérotée, reliée aux autres par une ligne,
+ * puis une carte (icône, titre, texte). Aucune illustration : une icône par carte (Icon.astro).
+ *
+ * Bureau (≥ 1024 px) : trois colonnes égales, pastilles en rangée reliées par une ligne horizontale,
+ * cartes de même hauteur. Dessous : une colonne, pastilles à gauche reliées par une ligne verticale,
+ * carte à droite de sa pastille.
+ *
+ * La ligne de liaison est faite de segments (un par <li>, sauf le dernier) qui vont du centre d'une
+ * pastille au centre de la suivante. Le remplissage au scroll est dans src/scripts/how-it-works.ts.
+ * Sans ce script (ou en mouvement réduit), la ligne reste entière.
+ *
+ * Espaces insécables (\u00a0) avant « : » ; apostrophes typographiques (’).
+ */
+interface Step {
+  icon: IconName;
+  /** Petite pastille dans le coin de l'icône (facultative) */
+  corner?: IconName;
+  title: string;
+  text: string;
+}
+const steps: Step[] = [
+  {
+    icon: "upload",
+    title: "Ajoutez vos élèves",
+    text: "Importez votre fichier Excel ou CSV, ou ajoutez les élèves un par un. Leurs informations sont enregistrées une seule fois.",
+  },
+  {
+    icon: "file",
+    title: "Choisissez un document",
+    text: "Certificat de scolarité, attestation d’inscription, fiche élève\u00a0: sélectionnez l’élève et le document. Scoly le génère avec l’en-tête et la signature de votre établissement.",
+  },
+  {
+    icon: "archive",
+    corner: "shield", // le document peut aussi être vérifié en ligne
+    title: "Retrouvez et faites vérifier",
+    text: "Chaque document est conservé dans les archives, où une recherche suffit à le retrouver. Il peut aussi être vérifié en ligne, sur une page publique.",
+  },
+];
+---
+
+<Section id={sectionIds.howItWorks} labelledby="comment-ca-marche-titre" class="hiw-section border-y border-line">
+  <div data-reveal>
+    <SectionHeading
+      id="comment-ca-marche-titre"
+      title="Comment ça marche"
+      subtitle="De la liste des élèves au document archivé, le parcours tient en trois étapes."
+    />
+  </div>
+
+  <div data-hiw class="hiw mt-12 sm:mt-14 lg:mt-16">
+    <ol data-hiw-list class="hiw-list m-0 list-none p-0">
+      {
+        steps.map((step, i) => (
+          <li class="hiw-step">
+            <span data-hiw-badge class="hiw-badge">
+              {i + 1}
+            </span>
+            {i < steps.length - 1 && (
+              <span aria-hidden="true" class="hiw-track">
+                <span data-hiw-fill class="hiw-fill" />
+              </span>
+            )}
+            <Card
+              padding="none"
+              data-reveal
+              data-delay={i * 0.12}
+              class="hiw-card flex flex-1 flex-col p-5 sm:p-6 lg:p-7"
+            >
+              <div class="relative mb-5 size-14 shrink-0">
+                <div
+                  aria-hidden="true"
+                  class="grid size-14 place-items-center rounded-2xl bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-300"
+                >
+                  <Icon name={step.icon} class="size-7" />
+                </div>
+                {step.corner && (
+                  <span
+                    aria-hidden="true"
+                    class="absolute -right-2 -bottom-2 grid size-7 place-items-center rounded-full border-2 border-surface bg-brand-600 text-white dark:bg-brand-300 dark:text-brand-950"
+                  >
+                    <Icon name={step.corner} class="size-3.5" />
+                  </span>
+                )}
+              </div>
+              <h3 class="type-h3">{step.title}</h3>
+              <p class="mt-3 text-base leading-relaxed text-muted lg:text-[1.0625rem]">{step.text}</p>
+            </Card>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+
+  <div data-reveal class="mt-12 flex w-full flex-col items-center text-center sm:mt-14">
+    <Button href={site.links.signup} size="lg" class="w-full sm:w-auto">Essayer gratuitement</Button>
+    <p class="type-small mt-4">Plan gratuit&nbsp;: jusqu’à 10 documents par mois, sans engagement.</p>
+  </div>
+</Section>
+
+<script>
+  import "../../scripts/how-it-works";
+</script>
+
+<style is:global>
+  /* Fond de section légèrement différent de la section précédente (fond de page) : un ton teinté en clair,
+     un fond plus profond en sombre. Les cartes (fond « surface ») s'y détachent nettement dans les deux thèmes. */
+  .hiw-section {
+    background: color-mix(in srgb, var(--color-tile) 42%, var(--color-canvas));
+  }
+  .dark .hiw-section {
+    background: color-mix(in srgb, #000 24%, var(--color-canvas));
+  }
+
+  /* ── Mobile et tablette (< 1024 px) : une colonne, pastilles à gauche, ligne verticale ── */
+  .hiw {
+    --hiw-b: 2.5rem; /* diamètre de la pastille */
+    --hiw-gap: 1.5rem; /* espace entre deux étapes */
+    --hiw-line: 2px;
+  }
+  .hiw-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--hiw-gap);
+    max-width: 40rem;
+    margin-inline: auto;
+  }
+  .hiw-step {
+    position: relative;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+  .hiw-badge {
+    position: relative;
+    z-index: 1;
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: var(--hiw-b);
+    height: var(--hiw-b);
+    border-radius: 9999px;
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 1.25rem;
+    line-height: 1;
+    /* anneau aux couleurs du fond : la ligne passe « derrière » sans toucher le bord de la pastille */
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-tile) 42%, var(--color-canvas));
+  }
+  .dark .hiw-badge {
+    box-shadow: 0 0 0 4px color-mix(in srgb, #000 24%, var(--color-canvas));
+  }
+  .hiw-card {
+    min-width: 0;
+  }
+  /* Segment : du centre de cette pastille au centre de la suivante (hauteur de l'étape + espace) */
+  .hiw-track {
+    position: absolute;
+    z-index: 0;
+    top: calc(var(--hiw-b) / 2);
+    left: calc(var(--hiw-b) / 2 - var(--hiw-line) / 2);
+    width: var(--hiw-line);
+    height: calc(100% + var(--hiw-gap));
+    background: var(--color-line);
+    border-radius: 9999px;
+  }
+  .hiw-fill {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--color-primary);
+    transform-origin: top;
+  }
+  /* Rempli par défaut ; vidé (puis rempli au scroll) seulement quand le script est prêt */
+  [data-hiw-ready] .hiw-fill {
+    transform: scaleY(var(--hiw-s, 0));
+  }
+
+  @media (min-width: 640px) {
+    .hiw {
+      --hiw-b: 2.75rem;
+      --hiw-gap: 1.75rem;
+    }
+    .hiw-step {
+      gap: 1rem;
+    }
+  }
+
+  /* ── Bureau (≥ 1024 px) : trois colonnes égales, pastilles en rangée, ligne horizontale ── */
+  @media (min-width: 1024px) {
+    .hiw {
+      --hiw-b: 3rem;
+      --hiw-gap: 2rem;
+    }
+    .hiw-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: var(--hiw-gap);
+      max-width: none;
+    }
+    .hiw-step {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1.5rem;
+    }
+    .hiw-badge {
+      align-self: center;
+      font-size: 1.375rem;
+    }
+    /* Du centre de la pastille au centre de la pastille de la colonne suivante */
+    .hiw-track {
+      top: calc(var(--hiw-b) / 2 - var(--hiw-line) / 2);
+      left: 50%;
+      width: calc(100% + var(--hiw-gap));
+      height: var(--hiw-line);
+    }
+    .hiw-fill {
+      transform-origin: left;
+    }
+    [data-hiw-ready] .hiw-fill {
+      transform: scaleX(var(--hiw-s, 0));
+    }
+  }
+</style>
